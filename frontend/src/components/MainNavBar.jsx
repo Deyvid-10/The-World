@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import Search from './Search';
 // import logo from '../assets/img/LOGO.png'
@@ -15,10 +15,40 @@ import {
   MenuItems 
 } from '@headlessui/react'
 import { UserIcon, ChatBubbleLeftEllipsisIcon, BellIcon  } from '@heroicons/react/24/outline'
+import { SesionContext } from '../store/sesion-context';
+import { fetchLogout, queryClient } from '../util/requests';
+import { useMutation } from '@tanstack/react-query';
+import IsLoading from './IsLoading';
 
 export default function MainNavBar() {
-  const [isLogIn, setIsLogIn] = useState(true)
 
+ const {user} = useContext(SesionContext)
+
+  const {data: userData, isLoading: userIsLoanding, isError: isErrorUser} = user
+
+  useEffect(()=>{
+    
+    if(isErrorUser){      
+      toast.error("User not found")
+    }
+  }, [isErrorUser])
+
+    const {mutate: logoutMutate, isPending, isError} = useMutation(
+      {
+        mutationFn: fetchLogout,
+        mutationKey: ['logout'],
+        onSuccess: (data) => {
+  
+          queryClient.invalidateQueries({queryKey: ['user']}) 
+
+        }
+      }
+    )
+
+  function logout(){
+    logoutMutate()
+  }
+  
   return (
     <div className="bg-white">
 
@@ -49,8 +79,10 @@ export default function MainNavBar() {
 
 
                 {/* User options */}
+                
+                {userIsLoanding && <IsLoading></IsLoading>}
 
-                {!isLogIn &&       
+                {(!userData && !userIsLoanding) &&      
                 <div className=''>              
                   <Link to="sign-up" className="rounded-full bg-emerald-500 px-3 py-2 font-semibold text-white shadow-xs hover:bg-emerald-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400">
                     Sign up
@@ -64,13 +96,16 @@ export default function MainNavBar() {
                 </div>}
 
                 {/* Loged options */}
-                {isLogIn && 
+                {(userData && !userIsLoanding) &&  
                 <section className='flex'>
                   {/* User */}
                   <Menu as="div"   className="relative ">
                     <MenuButton className="p-2 hover:cursor-pointer">
-                      <UserIcon aria-hidden="true"
-                            className="size-7 shrink-0 text-gray-400 hover:text-gray-500 "/>
+                      {!userData && <UserIcon aria-hidden="true"
+                            className="size-7 shrink-0 text-gray-400 hover:text-gray-500 "/>}
+                      
+                      {userData && <img src={userData[0].users_img} className='rounded-full bg-amber-300 size-7'></img>}
+                                  
                   
                       {/* <img className='size-7 rounded-lg border-3 border-indigo-600' src="https://api.dicebear.com/9.x/big-ears-neutral/svg?seed=Destiny" alt="profile photo" /> */}
                     </MenuButton>
@@ -83,21 +118,21 @@ export default function MainNavBar() {
                             <MenuItem>
                               <Link to="" className="">
                                 <div className='flex items-center p-2 gap-2'>
-                                  <div className='rounded-full bg-amber-300 size-9'></div>
-                                  <p className='font-semibold text-lg'>Deyvid Marmolejo</p>
+                                  <img src={userData[0].users_img} className='rounded-full bg-amber-300 size-9'></img>
+                                  <p className='font-semibold text-lg'>{userData[0].users_name + " " + userData[0].users_last_name }</p>
                                 </div>
                               </Link>
                             </MenuItem>
                             <MenuItem>
-                              <Link to="" className="text-sm  text-gray-700 hover:text-gray-800 px-3 py-1.5">
+                              <Link to="/edit-profile" className="text-sm  text-gray-700 hover:text-gray-800 px-3 py-1.5">
                                 Edit profile
                               </Link>
                             </MenuItem>
                             <span aria-hidden="true" className="w-full h-0.5 bg-gray-200 " />
                             <MenuItem>
-                              <Link to="log-in" className="text-sm text-gray-700 hover:text-gray-800 px-3 py-1.5">
-                                Log Out
-                              </Link>
+                              <button onClick={logout} className="text-sm text-left text-gray-700 hover:text-gray-800 px-3 py-1.5">
+                                Logout
+                              </button>
                             </MenuItem>
                             {/* <MenuItem>
                               <a href="#" className="text-sm rounded-md bg-indigo-600 px-3 py-1.5 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">

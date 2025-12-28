@@ -16,7 +16,7 @@ export default function PrincipalComment(){
 
     return <>
                
-                <div className='flex'>
+                <div className='flex justify-between'>
                     <div>
                         <div className='flex items-center gap-2'>
                             <figure className='size-8 rounded-full overflow-hidden'>
@@ -28,7 +28,9 @@ export default function PrincipalComment(){
                             <h6 className='font-semibold text-gray-950'>Deyvid Marmolejo</h6>
                             <p className='text-gray-500'>Feb. 8, 2022</p>
                         </div>
-                        <p className='mt-2 ml-1 text-gray-800'>Very straight-to-point article. Really worth time reading. Thank you! But tools are just the instruments for the UX designers. The knowledge of the design tools are as important as the creation of the design strategy.</p>
+                        <div cla>
+                            <p className='text-gray-800'>Very straight-to-point article. Really worth time reading. Thank you! But tools are just the instruments for the UX designers. The knowledge of the design tools are as important as the creation of the design strategy.</p>
+                        </div>
                         <button className='flex items-center gap-1 mt-4 text-gray-800 hover:text-gray-950'
                                 onClick={showReplyForm}
                                 >
