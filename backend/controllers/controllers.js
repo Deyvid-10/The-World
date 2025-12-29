@@ -9,6 +9,27 @@ export class Controller{
     constructor({ Model }){
         this.Model = Model
     }
+
+    getMuchUsers = async (req, res) =>{
+
+        console.log(req.query.search);
+        
+        let users = []
+        
+        if(req.query.search){users = await this.Model.getMuchUsers(req.query.search)}
+        else if(req.query.suggestion = "true") {users = await this.Model.getSuggestionsUsers()}
+        
+        if(users.length === 0){
+            return res.send(false)
+        }
+        
+        return res.json(users)
+    }
+
+    getPosts = async (req, res) =>{
+        const posts = await this.Model.getPosts()
+        return res.json(posts)
+    }
     
     logIn = async (req, res) => {
         
@@ -75,8 +96,6 @@ export class Controller{
         if(emaillValidation){
             return res.json(({errors: true, errorsList: ['This email already exist']}))
         } 
-
-        console.log(emaillValidation);
         
 
         // For hash the password

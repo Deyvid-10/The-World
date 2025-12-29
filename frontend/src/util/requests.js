@@ -2,6 +2,48 @@ import { QueryClient } from '@tanstack/react-query';
 
 export const queryClient = new QueryClient();
 
+export async function fetchUsers(search){
+  let parameter = '?search=' + search 
+
+  if(search === "*****suggestions*****") {parameter = '?suggestion=true'} 
+
+  let url = 'http://localhost:3000/users' + parameter;
+  console.log(parameter);
+  
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the events');
+    throw error;
+  }
+
+  const users = await response.json();  
+  
+  return users;
+}
+
+
+export async function fetchPosts({}){
+   let url = 'http://localhost:3000/posts';
+
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the events');
+    throw error;
+  }
+
+  const posts = await response.json();  
+  
+  return posts;
+}
+
 export async function credentials({formData, type, method}) {  
    let url = 'http://localhost:3000/' + type;
    

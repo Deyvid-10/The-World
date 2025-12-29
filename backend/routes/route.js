@@ -7,6 +7,8 @@ export const createRouter = () => {
 
   const controller = new Controller ({Model: Model})
 
+  router.get('/users',   controller.getMuchUsers);
+  router.get('/posts',   controller.getPosts);
   router.post('/login',   controller.logIn);
   router.post('/signup',   controller.signUp);
   router.put('/editProfile',   controller.editProfile);

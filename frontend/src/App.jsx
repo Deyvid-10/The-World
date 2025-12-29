@@ -18,6 +18,8 @@ import EditProfilePage from './pages/EditProfilePage'
 import { queryClient } from './util/requests'
 import { QueryClientProvider } from '@tanstack/react-query'
 import SesionContextProvider from './store/sesion-context'
+import ContentContextProvider from './store/content-context'
+import { ToastContainer } from 'react-toastify'
 
 const router = createBrowserRouter([{
    path: '/',
@@ -39,12 +41,15 @@ const router = createBrowserRouter([{
 function App() {
 
   return (
+    
     <QueryClientProvider client={queryClient}>
-      <SesionContextProvider>
-        <RouterProvider router={router}>
-          
-        </RouterProvider>
-      </SesionContextProvider>
+      <ContentContextProvider>
+        <SesionContextProvider>
+          <RouterProvider router={router}>
+            <ToastContainer></ToastContainer>
+          </RouterProvider>
+        </SesionContextProvider>
+      </ContentContextProvider>
     </QueryClientProvider>
   )
 }
