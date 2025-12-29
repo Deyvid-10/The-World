@@ -11,8 +11,6 @@ export class Controller{
     }
 
     getMuchUsers = async (req, res) =>{
-
-        console.log(req.query.search);
         
         let users = []
         
@@ -24,6 +22,12 @@ export class Controller{
         }
         
         return res.json(users)
+    }
+
+    getUserProfile = async (req, res) =>{
+        const userId = req.params.userId
+        const userProfile = await this.Model.getUserProfile(userId)
+        return res.json(userProfile)
     }
 
     getPosts = async (req, res) =>{

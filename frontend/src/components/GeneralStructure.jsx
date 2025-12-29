@@ -8,7 +8,7 @@ export default function GeneralStructure({children}){
             <section className="bg-white w-96 rounded-2xl h-[290px]  border p-4 border-gray-200">
                 <div className="flex justify-between border-b border-gray-200 pb-2">
                     <h2 className="text-gray-700 font-semibold text-xl">Suggestions</h2>
-                    <p className="text-gray-600 hover:text-gray-700 text-sm">View all</p>
+                    {/* <p className="text-gray-600 hover:text-gray-700 text-sm">View all</p> */}
                 </div>
                 <ProfilesList className="flex flex-col gap-5 py-5" suggestion/>
             </section>

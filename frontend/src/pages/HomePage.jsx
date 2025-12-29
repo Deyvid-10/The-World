@@ -7,27 +7,21 @@ import GeneralStructure from "../components/GeneralStructure"
 import { useContext, useEffect } from "react"
 import { SesionContext } from "../store/sesion-context"
 import { ContentContext } from "../store/content-context"
-import IsLoading from "../components/IsLoading"
+import PostsList from "../components/PostsList"
 
 export default function HomePage(){
 
     const {user} = useContext(SesionContext)
-    const {posts} = useContext(ContentContext)
 
     const {data: userData, isLoading: userIsLoanding, isError: isErrorUser} = user
-    const {postsData, postsIsLoading, postsIsError} = posts
-    console.log(postsData);
+
     
      useEffect(()=>{
         
         if(isErrorUser){      
           toast.error("User not found")
         }
-
-        if(postsIsError){      
-          toast.error("Posts not found")
-        }
-      }, [isErrorUser, postsIsError])
+      }, [isErrorUser])
     return(
         <GeneralStructure>
             {/* post section */}
@@ -58,22 +52,7 @@ export default function HomePage(){
                     </div>
                 </section>
                 
-                <section className="w-full flex flex-col gap-4 bg-white rounded-2xl border py-4 border-gray-200">
-                    {postsIsLoading && <IsLoading></IsLoading>}
-                    {postsData && 
-                    <div>
-                        {postsData.map((data, index)=><PostItem 
-                            key={index}
-                            userName={data.users_name}
-                            userLastName={data.users_last_name}
-                            userImg={data.users_img}
-                            postDate={data.posts_date}
-                            postImg={data.posts_img}
-                            postDescription={data.posts_description}
-                            postLikes={data.posts_likes}
-                            />)}
-                    </div>}
-                </section>
+                <PostsList></PostsList>
             </section>}
         </GeneralStructure>
     )

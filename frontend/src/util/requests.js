@@ -8,7 +8,6 @@ export async function fetchUsers(search){
   if(search === "*****suggestions*****") {parameter = '?suggestion=true'} 
 
   let url = 'http://localhost:3000/users' + parameter;
-  console.log(parameter);
   
   const response = await fetch(url, {
     method: "GET",
@@ -25,6 +24,25 @@ export async function fetchUsers(search){
   return users;
 }
 
+export async function fetchUserProfile(userProfileId){
+  
+  let url = 'http://localhost:3000/user/profile/' + userProfileId;
+  
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the events');
+    throw error;
+  }
+
+  const userProfile = await response.json();  
+  console.log(userProfile);
+  
+  return userProfile;
+}
 
 export async function fetchPosts({}){
    let url = 'http://localhost:3000/posts';

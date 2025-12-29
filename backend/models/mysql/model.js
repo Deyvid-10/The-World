@@ -15,7 +15,7 @@ export class Model{
         
         const [users] = await connetion.query(
             `
-                SELECT users_img, users_name, users_last_name
+                SELECT users_id, users_img, users_name, users_last_name
                 FROM users
                 WHERE users_id != 20 
                 AND UPPER(CONCAT(users_name, " ",users_last_name)) like ? 
@@ -25,11 +25,24 @@ export class Model{
         return users
     }
 
+    static async getUserProfile (userProfileId){
+        
+        const [userProfile] = await connetion.query(
+            `
+                SELECT users_img, users_name, users_last_name
+                FROM users
+                WHERE users_id = ?
+            `, [userProfileId]
+        )
+
+        return userProfile
+    }
+
     static async getSuggestionsUsers (){
         
         const [users] = await connetion.query(
             `
-                SELECT users_img, users_name, users_last_name
+                SELECT users_id, users_img, users_name, users_last_name
                 FROM users
                 WHERE users_id != 20 
             `, []

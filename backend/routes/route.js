@@ -8,6 +8,7 @@ export const createRouter = () => {
   const controller = new Controller ({Model: Model})
 
   router.get('/users',   controller.getMuchUsers);
+  router.get('/user/profile/:userId',   controller.getUserProfile);
   router.get('/posts',   controller.getPosts);
   router.post('/login',   controller.logIn);
   router.post('/signup',   controller.signUp);
