@@ -119,7 +119,7 @@ export default function MainNavBar() {
                               <Link to="" className="">
                                 <div className='flex items-center p-2 gap-2'>
                                   <img src={userData[0].users_img} className='rounded-full bg-amber-300 size-9'></img>
-                                  <p className='font-semibold text-lg'>{userData[0].users_name + " " + userData[0].users_last_name }</p>
+                                  <Link to={"/profile/you/posts"}  className='font-semibold text-lg'>{userData[0].users_name + " " + userData[0].users_last_name }</Link>
                                 </div>
                               </Link>
                             </MenuItem>

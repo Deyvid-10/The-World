@@ -11,11 +11,21 @@ export class Controller{
     }
 
     getMuchUsers = async (req, res) =>{
+
+        const paramId = req.params.userId
+        
+        const token = req.cookies.tokenSocialSesion;
+        
+        if(!token){
+            return res.send(false)
+        }
+
+        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
         
         let users = []
         
-        if(req.query.search){users = await this.Model.getMuchUsers(req.query.search)}
-        else if(req.query.suggestion = "true") {users = await this.Model.getSuggestionsUsers()}
+        if(req.query.search || req.query.search === ''){users = await this.Model.getMuchUsers(req.query.search, id)}
+        else if(req.query.suggestion = "true") {users = await this.Model.getSuggestionsUsers(id)}
         
         if(users.length === 0){
             return res.send(false)
@@ -25,13 +35,97 @@ export class Controller{
     }
 
     getUserProfile = async (req, res) =>{
-        const userId = req.params.userId
-        const userProfile = await this.Model.getUserProfile(userId)
-        return res.json(userProfile)
+        let userId
+        const paramId = req.params.userId
+
+        const token = req.cookies.tokenSocialSesion;
+
+        if(!token){
+            return res.send(false)
+        }
+
+        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+
+        if(paramId !== 'you'){
+            userId = paramId
+        }
+        else{
+            userId = id
+        }
+
+        const userData = await this.Model.getUserProfile(userId, id)
+        const {userProfile, postsQuantity, userFollowers, followersQuantity, userFollowed, followedsQuantity} = userData
+        
+        
+        const {users_id, users_img, users_name, users_last_name, users_bio} = userProfile[0]
+        let users_posts = []
+        
+        if(userProfile[0].posts_description !== null){
+            users_posts = [...userProfile]
+        }
+        let followed = false
+        if(userProfile[0].follow_relation_id !== null){
+            followed = true
+        }
+        console.log(userProfile[0]);
+        
+        const newProfileUser = [{users_id, users_img, users_name, users_last_name, users_bio, followed,
+                ...postsQuantity[0], users_posts, 
+                ...followersQuantity[0], users_followers: userFollowers,
+                ...followedsQuantity[0], users_followed: userFollowed,}] 
+        
+        return res.json(newProfileUser)
     }
 
+    followUser = async (req, res) => {
+
+        const token = req.cookies.tokenSocialSesion;
+        
+        
+        if(!token){
+            return res.send(false)
+        }
+
+        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+
+        const item = req.body
+                        
+        await this.Model.followUser(item.user, id)
+
+        return res.send({message: "Your follow this user now"})
+    }
+
+    unfollowUser = async (req, res) => {
+
+        const token = req.cookies.tokenSocialSesion;
+        
+        
+        if(!token){
+            return res.send(false)
+        }
+
+        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+
+        const item = req.body
+        
+        
+        await this.Model.unfollowUser(item.user, id)
+
+        return res.send({message: "Your unfollow this user now"})
+    }
+
+
     getPosts = async (req, res) =>{
-        const posts = await this.Model.getPosts()
+        const token = req.cookies.tokenSocialSesion;
+        
+        if(!token){
+            return res.send(false)
+        }
+
+        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        
+        const posts = await this.Model.getPosts(id)
+
         return res.json(posts)
     }
     
@@ -191,7 +285,7 @@ export class Controller{
 
         const token = req.cookies.tokenSocialSesion;
         
-        if(!token){
+        if(token === undefined){
             return res.send(false)
         }
 
@@ -228,7 +322,6 @@ export class Controller{
         {            
             return res.json({errors: true, error: "Some field is empty, please populate"})
         } 
-        console.log(comment);
         
         await this.Model.insertComment(comment)
 

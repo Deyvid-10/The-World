@@ -20,17 +20,18 @@ export default function UserForm({createAccount = false, editProfile = false}){
   const { user } = useContext(SesionContext)
 
   const { data, isLoading, isSuccess } = user
+  console.log(data);
   
   useEffect(()=>{
     if(data && !editProfile){
       redirect("/")      
     }
 
-    if(!data && editProfile){
+    if(isSuccess && !data && editProfile){
       redirect("/")      
     }
 
-  }, [data, isSuccess])
+  }, [data])
   
   const {mutate, data: response, isPending} = useMutation(
     {
@@ -80,7 +81,6 @@ export default function UserForm({createAccount = false, editProfile = false}){
     })
     
   }
-  console.log(data);
   
   const [avatarIndex, setAvatarIndex] = useState(1)
 
@@ -123,6 +123,14 @@ export default function UserForm({createAccount = false, editProfile = false}){
             <Input label={"Email address"} name="email" type={"email"} defaultValue={data?.[0]?.users_email}/>
             <Input label={"Password"} name="password" type={"password"} />
             {(createAccount || editProfile) && <Input label={"Confirm Password"} name="conf-password" type={"password"}  />}
+            {(createAccount || editProfile) && <div>
+              <label className="block text-sm/6 font-medium text-gray-900">
+                Info
+              </label>
+              <div className="mt-2">
+                <textarea name="bio" className='w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-emerald-600'></textarea>
+              </div>
+            </div>}
             {response && "errors" in response &&
               <ul>
                 {response.errorsList.map((err, index) => (

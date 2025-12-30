@@ -9,6 +9,8 @@ export const createRouter = () => {
 
   router.get('/users',   controller.getMuchUsers);
   router.get('/user/profile/:userId',   controller.getUserProfile);
+  router.post('/user/follow',   controller.followUser);
+  router.delete('/user/unfollow',   controller.unfollowUser);
   router.get('/posts',   controller.getPosts);
   router.post('/login',   controller.logIn);
   router.post('/signup',   controller.signUp);

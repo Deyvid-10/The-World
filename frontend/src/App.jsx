@@ -27,7 +27,9 @@ const router = createBrowserRouter([{
     errorElement: <ErrorsPage/>,
     children: [
       {index: true, element:<HomePage />},
-      {path:'profile/:userId', element:<Profile />},
+      {path:'profile/:userId/posts', element:<Profile profileContent={"post"}/>},
+      {path:'profile/:userId/followers', element:<Profile profileContent={"follower"}/>},
+      {path:'profile/:userId/followed', element:<Profile profileContent={"followed"}/>},
       {path:'search-profiles', element:<ProfilesPage />},
       {path:'chats', element:<ChatsPage />},
     ]},

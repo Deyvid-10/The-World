@@ -13,7 +13,7 @@ export default function Comments(){
 
     return(
         <>
-            <form className='flex flex-col gap-3'>
+            <form className='flex flex-col gap-3 mt-3'>
                 <textarea name="comment" 
                         id="comment"
                         rows={3}

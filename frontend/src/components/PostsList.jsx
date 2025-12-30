@@ -3,20 +3,14 @@ import IsLoading from "./IsLoading"
 import { ContentContext } from "../store/content-context"
 import PostItem from "./PostItem"
 
-export default function PostsList(){
-    const {posts} = useContext(ContentContext)
-    const {postsData, postsIsLoading, postsIsError} = posts
+export default function PostsList({style, postsData, postsIsLoading, emptyMessage}){
+    
 
-    useEffect(()=>{
-
-        if(postsIsError){      
-            toast.error("Posts not found")
-        }
-        }, [ postsIsError])
-
-    return <section className="w-full flex flex-col gap-4 bg-white rounded-2xl border py-4 border-gray-200">
+    return <section className={style}>
         {postsIsLoading && <IsLoading></IsLoading>}
-        {postsData && 
+        {postsData && postsData.length === 0 && <p className="text-center font-semibold w-170">There is not posts in this profile</p>}
+        {postsData && postsData.length !== 0 && 
+
         <div>
             {postsData.map((data, index)=><PostItem
                 key={index}
@@ -27,6 +21,7 @@ export default function PostsList(){
                 postImg={data.posts_img}
                 postDescription={data.posts_description}
                 postLikes={data.posts_likes}
+                userId={data.users_id}
                 />)}
         </div>}
     </section>

@@ -44,6 +44,50 @@ export async function fetchUserProfile(userProfileId){
   return userProfile;
 }
 
+export async function followUser(user) {  
+   let url = 'http://localhost:3000/user/follow';
+   
+  const response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify({user}),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the events');
+    throw error;
+  }
+
+  const res  = await response.json();
+  
+  return res;
+}
+
+export async function unfollowUser(user) {  
+   let url = 'http://localhost:3000/user/unfollow';
+   
+  const response = await fetch(url, {
+    method: 'DELETE',
+    body: JSON.stringify({user}),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the events');
+    throw error;
+  }
+
+  const res  = await response.json();
+  
+  return res;
+}
+
 export async function fetchPosts({}){
    let url = 'http://localhost:3000/posts';
 

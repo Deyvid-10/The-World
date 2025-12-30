@@ -7,34 +7,37 @@ import PrincipalComment from "./PrincipalComment"
 
 import { useContext, useState } from "react"
 import { ContentContext } from "../store/content-context"
+import { Link } from "react-router-dom"
 
-export default function PostItem({userName, userLastName, userImg, postImg, postDate, postDescription, postLikes}){
+export default function PostItem({userName, userLastName, userImg, userId,postImg, postDate, postDescription, postLikes}){
 
     const [showComments, setShowComments] = useState(false)
     const [like, setLike] = useState(false)
 
     return(
-        <>
-            <div className="flex justify-between items-center px-4">
+        <section className="border-b pb-3 border-gray-100 mb-3">
+            <div className="flex justify-between items-center px-4 mb-3">
                 <div className="flex items-center gap-2">
-                    <figure className="rounded-full size-8 object-cover">
-                        <img className="rounded-full size-full" src={userImg} alt={"profile photo for " + userName} />
+                    <figure className="rounded-full size-8">
+                        <img className="rounded-full size-full object-cover" src={userImg} alt={"profile photo for " + userName} />
                     </figure>
-                    <p className="text-gray-700 font-semibold">{userName + " " + userLastName}</p>
+                    <Link to={"/profile/" + userId + "/posts"} className="text-gray-700 font-semibold">{userName + " " + userLastName}</Link>
                     <p className="text-gray-400">{new Date(postDate).toDateString("en-US", { day: "numeric", month: "long", year: "numeric" })}</p>
                 </div>
                 {/* <UserPlusIcon className="size-6 text-gray-500 hover:text-gray-600"/> */}
                 
             </div>
-            <figure className="overflow-hidden h-96 w-full bg-gray-300 my-3">
+            {postImg && <figure className="overflow-hidden h-96 w-full bg-gray-300">
                 <img src={postImg}
                     alt={"image post for " + userName}
                     className="size-full object-cover"
             
                     />
-            </figure>
+            </figure>}
+
+            
                 
-            <p className="px-4 text-gray-600">{postDescription}</p>
+            <p className="px-4 text-gray-600 mt-3">{postDescription}</p>
             <div className="px-4 flex gap-2 text-gray-500 mt-2">            
                
                 {<button onClick={()=>{setLike((prev) => !prev)}} className="flex items-center gap-1">
@@ -53,7 +56,7 @@ export default function PostItem({userName, userLastName, userImg, postImg, post
                 <div className="px-5"><Comments/></div>
             }
 
-            <span className="w-[98%] mx-auto border border-gray-100 px-4"></span>
-        </>
+            
+        </section>
     )
 } 
