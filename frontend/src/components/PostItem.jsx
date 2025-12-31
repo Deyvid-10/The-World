@@ -21,7 +21,7 @@ export default function PostItem({userName, userLastName, userImg, userId,postIm
             <div className="flex justify-between items-center px-4 mb-3">
                 <div className="flex items-center gap-2">
                     <figure className="rounded-full size-8">
-                        <img className="rounded-full size-full object-cover" src={userImg} alt={"profile photo for " + userName} />
+                        <img className="rounded-full size-full object-cover" src={backendUrl + userImg} alt={"profile photo for " + userName} />
                     </figure>
                     <Link to={"/profile/" + userId + "/posts"} className="text-gray-700 font-semibold">{userName + " " + userLastName}</Link>
                     <p className="text-gray-400">{new Date(postDate).toDateString("en-US", { day: "numeric", month: "long", year: "numeric" })}</p>

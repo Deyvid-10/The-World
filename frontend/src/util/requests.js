@@ -39,7 +39,6 @@ export async function fetchUserProfile(userProfileId){
   }
 
   const userProfile = await response.json();  
-  console.log(userProfile);
   
   return userProfile;
 }
@@ -133,11 +132,11 @@ export async function credentials({formData, type, method}) {
    
   const response = await fetch(url, {
     method: method,
-    body: JSON.stringify(formData),
-    headers: {
-      'Content-Type': 'application/json',
+    body: formData,
+    // headers: {
+    //   'Content-Type': 'application/json',
       
-    },
+    // },
     credentials: "include",
   });
 

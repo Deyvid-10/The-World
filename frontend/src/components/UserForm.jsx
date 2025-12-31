@@ -12,6 +12,7 @@ import { credentials, queryClient } from '../util/requests'
 import { SesionContext } from '../store/sesion-context'
 import { useContext } from 'react'
 import { useState } from 'react'
+import { useRef } from 'react'
 
 export default function UserForm({createAccount = false, editProfile = false}){
 
@@ -20,7 +21,6 @@ export default function UserForm({createAccount = false, editProfile = false}){
   const { user } = useContext(SesionContext)
 
   const { data, isLoading, isSuccess } = user
-  console.log(data);
   
   useEffect(()=>{
     if(data && !editProfile){
@@ -40,6 +40,8 @@ export default function UserForm({createAccount = false, editProfile = false}){
       onSuccess: (data) => {
           
         queryClient.invalidateQueries({queryKey: ['user']})
+        queryClient.invalidateQueries({queryKey: ['posts']})
+        queryClient.invalidateQueries({queryKey: ['users']})
         if(editProfile && data.error){
           toast.error(data.error)
         }
@@ -71,29 +73,42 @@ export default function UserForm({createAccount = false, editProfile = false}){
     
     
     // createAccount || editProfile ? avatar = fd.getAll('avatar') : undefined
-    const data = Object.fromEntries(fd.entries())
+    // const data = Object.fromEntries(fd.entries())
     // createAccount || editProfile ? data.avatar = avatar : undefined
+    // fd.append("img", data.profilePhoto)
     
-    
-    mutate({formData: data, 
+    mutate({formData: fd, 
           type:  editProfile ? 'editProfile' : createAccount ? 'signup' : 'login',
           method: editProfile ? 'PUT' : 'POST'
     })
     
   }
-  
-  const [avatarIndex, setAvatarIndex] = useState(1)
 
-  // useEffect(()=>{
+  const profileRef = useRef()
+
+  function handleProfilePhoto(){
+    profileRef.current.click()
+  }  
+  
+  const [profilePhoto, setProfilePhoto] = useState(`http://localhost:3000/img/profiles/default_profile_photo.webp`)
+  useEffect(()=>{
+    if(data){
+      setProfilePhoto(`http://localhost:3000${data[0].users_img}`)
+      console.log(data);
+      
+    }
+  }, [data])
+  function getProfileImg(e){
+    const file = e.target.files[0];
     
-  //   if(data && editProfile){
-  //     setAvatarIndex(avatars.findIndex((avatar) => avatar.img === data[0].users_img))
-  //   }
-  //   else{
-  //     setAvatarIndex(0)
-  //   }
-    
-  // }, [data])
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        setProfilePhoto(event.target.result); 
+    };
+    reader.readAsDataURL(file);
+  }
   
   return (
     <section className={(createAccount || editProfile) ? 'flex flex-row-reverse m-auto h-screen' : "flex"}>
@@ -111,16 +126,21 @@ export default function UserForm({createAccount = false, editProfile = false}){
 
         <div className={(createAccount || editProfile) ? "shadow border bg-white border-gray-100 p-5 rounded-2xl mt-7 sm:mx-auto sm:w-full max-w-full sm:max-w-md md:max-w-full" 
                                       : "shadow border bg-white border-gray-100 p-5 rounded-2xl mt-7 sm:mx-auto sm:w-full sm:max-w-sm"}>
+          {(createAccount || editProfile) && <div>
+            <div className='mb-2 mx-auto size-50 rounded-full'>
+              <img className='size-full mx-auto object-cover rounded-full' src={profilePhoto} alt="profile photo"/>
+            </div>
+            <button accept="image/*" onChange={getProfileImg} onClick={handleProfilePhoto} className='text-center block text-sm/6 font-medium text-gray-700 w-full mb-5 hover:text-gray-800'>Edit profile photo</button>
+          </div>}
           <form onSubmit={handleSubmit} className="space-y-6">
-           
+            <input ref={profileRef} onChange={getProfileImg} className='hidden' type="file" name="profilePhoto" id="profilePhoto" />
             {(createAccount || editProfile) && 
-            
             <div className='block sm:flex sm:space-y-0 space-y-6 gap-2 justify-between'>
                 <Input label={"Name"} name="name" type={"text"} defaultValue={data?.[0]?.users_name}/>
                 <Input label={"Last Name"} name="last-name" type={"text"} defaultValue={data?.[0]?.users_last_name}/>
             
             </div>}
-            <Input label={"Email address"} name="email" type={"email"} defaultValue={data?.[0]?.users_email}/>
+            <Input label={"Email address"} name="email" type={"text"} defaultValue={data?.[0]?.users_email}/>
             <Input label={"Password"} name="password" type={"password"} />
             {(createAccount || editProfile) && <Input label={"Confirm Password"} name="conf-password" type={"password"}  />}
             {(createAccount || editProfile) && <div>
@@ -128,7 +148,7 @@ export default function UserForm({createAccount = false, editProfile = false}){
                 Info
               </label>
               <div className="mt-2">
-                <textarea name="bio" className='w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-emerald-600'></textarea>
+                <textarea defaultValue={data?.[0]?.users_bio} name="bio" className='w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-emerald-600'></textarea>
               </div>
             </div>}
             {response && "errors" in response &&
@@ -161,13 +181,6 @@ export default function UserForm({createAccount = false, editProfile = false}){
         </div>
 
       </div>
-
-      {/* <div className="w-full h-dvh flex-1">
-        <img 
-        src={editProfile ? front_page_home : createAccount ? front_page_cloth : front_page_tech}
-        className=" w-full h-full brightness-75 object-cover" alt="Front page" />
-        
-      </div> */}
 
     </section>
   )

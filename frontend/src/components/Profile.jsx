@@ -9,6 +9,8 @@ import { ContentContext } from "../store/content-context"
 import IsLoading from "./IsLoading"
 import ProfilesList from "./ProfilesList"
 
+let url = 'http://localhost:3000/'
+
 export default function Profile({profileContent}){
     
     const {userId} = useParams()
@@ -28,7 +30,6 @@ export default function Profile({profileContent}){
     useEffect(()=>{
         userProfileRefetch()
     }, [userId])
-    console.log(userProfileData);
     
     return(
         <GeneralStructure>
@@ -37,7 +38,7 @@ export default function Profile({profileContent}){
                 <div className="flex gap-5 items-center justify-between mx-auto">
                     <figure className="overflow-hidden rounded-full size-40 bg-emerald-600">
                         <img 
-                            src={ userProfileData[0].users_img} 
+                            src={url + userProfileData[0].users_img} 
                             alt={"Profile photo for" + userProfileData[0].users_name}
                             className="object-cover size-full"/>
                     </figure>

@@ -4,6 +4,7 @@ import { Link, useSearchParams } from "react-router-dom"
 import { queryClient } from "../util/requests"
 import IsLoading from "./IsLoading"
 
+let url = "http://localhost:3000"
 
 export default function ({usersData, usersIsLoading, ...props}){
      
@@ -15,7 +16,7 @@ export default function ({usersData, usersIsLoading, ...props}){
                 <li key={index} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <figure className="rounded-full size-8">
-                            <img className="size-full rounded-full object-cover" src={user.users_img} alt={"Profile photo for user " + user.users_name} />
+                            <img className="size-full rounded-full object-cover" src={url + user.users_img} alt={"Profile photo for user " + user.users_name} />
                         </figure>
                         <Link to={"/profile/" + user.users_id + "/posts"} className="text-gray-700 font-semibold">{user.users_name + " " + user.users_last_name}</Link>
                     </div>

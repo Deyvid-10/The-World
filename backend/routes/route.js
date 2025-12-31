@@ -5,7 +5,7 @@ import multer from "multer"
 
 export const createRouter = () => {
 
-  const storage = multer.diskStorage({
+  const storagePosts = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, "public/img/posts"); 
     },
@@ -14,22 +14,33 @@ export const createRouter = () => {
     },
   });
 
-// Crear la instancia de multer con esa configuración
-const upload = multer({ storage });
+  const uploadPost = multer({ storage: storagePosts });
+
+  const storageProfiles = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, "public/img/profiles"); 
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + "-" + file.originalname);
+    },
+  });
+
+  const uploadProfile = multer({ storage: storageProfiles });
+
 
 
   const router = Router();
   const controller = new Controller ({Model: Model})
 
   router.get('/users',   controller.getMuchUsers);
-  router.post('/upload',  upload.single("image"), controller.insertPost);
+  router.post('/upload',  uploadPost.single("image"), controller.insertPost);
   router.get('/user/profile/:userId',   controller.getUserProfile);
   router.post('/user/follow',   controller.followUser);
   router.delete('/user/unfollow',   controller.unfollowUser);
   router.get('/posts',   controller.getPosts);
   router.post('/login',   controller.logIn);
-  router.post('/signup',   controller.signUp);
-  router.put('/editProfile',   controller.editProfile);
+  router.post('/signup', uploadProfile.single("profilePhoto"), controller.signUp);
+  router.put('/editProfile', uploadProfile.single("profilePhoto"),  controller.editProfile);
   router.post('/logout',   controller.logOut);
   router.get('/user',   controller.getUserInfo);
   router.post('/comment/insert',   controller.insertComment);

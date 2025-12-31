@@ -42,7 +42,7 @@ export class Model{
                 u.users_id, u.users_img, u.users_name, u.users_last_name, follow_relation_id
                 FROM users u
                 LEFT JOIN follow_relation f
-                ON u.users_id = f.follow_relation_followed
+                ON u.users_id = f.follow_relation_follower
                 WHERE u.users_id != ? and f.follow_relation_id IS NULL
                 ORDER BY RAND()
                 LIMIT 4
@@ -124,8 +124,6 @@ export class Model{
                  WHERE follow_relation_follower = ?
             `, [idLogged]
         )
-        
-        console.log(isFollowed);
         
 
         const [postsQuantity] = await connetion.query(
@@ -231,14 +229,14 @@ export class Model{
     static async insertSignupCredentials(credentials){
         
         await connetion.query(
-            "INSERT INTO users ( `users_name`, `users_last_name`, `users_email`, `users_password`) VALUES (?, ?, ?, ?)",
+            "INSERT INTO users ( `users_name`, `users_last_name`, `users_email`, `users_password`, `users_bio`, `users_img`) VALUES (?, ?, ?, ?, ?, ?)",
             [...Object.values(credentials)]
         )
     }
 
     static async editProfile(credentials){
         await connetion.query(
-            "UPDATE users SET users_img = ?, users_name = ?, users_last_name = ?, users_email = ?, users_password = ?, users_address = ?, users_postal_code = ?,  users_phone_number = ?, `users_credit-card` = ? WHERE users_id = 14",
+            "UPDATE users SET users_name = ?, users_last_name = ?, users_email = ?, users_password = ?, users_bio = ?, users_img = ? WHERE users_id = ?",
             [...Object.values(credentials)]
         )
     }

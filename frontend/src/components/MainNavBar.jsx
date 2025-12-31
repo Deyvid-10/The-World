@@ -20,6 +20,8 @@ import { fetchLogout, queryClient } from '../util/requests';
 import { useMutation } from '@tanstack/react-query';
 import IsLoading from './IsLoading';
 
+let urlBackend = 'http://localhost:3000'
+
 export default function MainNavBar() {
 
  const {user} = useContext(SesionContext)
@@ -104,9 +106,8 @@ export default function MainNavBar() {
                       {!userData && <UserIcon aria-hidden="true"
                             className="size-7 shrink-0 text-gray-400 hover:text-gray-500 "/>}
                       
-                      {userData && <img src={userData[0].users_img} className='rounded-full bg-amber-300 size-7'></img>}
-                                  
-                  
+                      {userData && <figure className='size-7'><img src={urlBackend + userData[0].users_img} className='rounded-full size-full object-cover bg-amber-300'></img></figure>}
+                        
                       {/* <img className='size-7 rounded-lg border-3 border-indigo-600' src="https://api.dicebear.com/9.x/big-ears-neutral/svg?seed=Destiny" alt="profile photo" /> */}
                     </MenuButton>
                       <MenuItems
@@ -118,7 +119,7 @@ export default function MainNavBar() {
                             <MenuItem>
                               <Link to="" className="">
                                 <div className='flex items-center p-2 gap-2'>
-                                  <img src={userData[0].users_img} className='rounded-full bg-amber-300 size-9'></img>
+                                  <div className='size-9'><img src={urlBackend + userData[0].users_img} className='rounded-full size-full object-cover bg-amber-300 '></img></div>
                                   <Link to={"/profile/you/posts"}  className='font-semibold text-lg'>{userData[0].users_name + " " + userData[0].users_last_name }</Link>
                                 </div>
                               </Link>

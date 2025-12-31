@@ -9,6 +9,8 @@ import { SesionContext } from "../store/sesion-context"
 import { ContentContext } from "../store/content-context"
 import PostsList from "../components/PostsList"
 
+let url = 'http://localhost:3000/'
+
 export default function HomePage(){
     const {posts, insertPost} = useContext(ContentContext)
     const {postsData, postsIsLoading, postsIsError} = posts
@@ -71,7 +73,7 @@ export default function HomePage(){
         const formData =  new FormData();
         formData.append("thought", thoughts)
         formData.append("image", upLoadImg);
-
+        
         mutatePost(formData)
     }
 
@@ -88,7 +90,7 @@ export default function HomePage(){
             {userData && <section  className="flex flex-col gap-3 max-w-[800px]">
                 <secction className="w-full bg-white rounded-2xl border p-4 border-gray-200">
                     <div className="flex items-center gap-2 ">
-                        <img src={userData[0].users_img}  alt={"Profile image for " + userData[0].Marmolejo} className="rounded-full size-14"/>
+                        <figure className="size-14"><img src={url + userData[0].users_img}  alt={"Profile image for " + userData[0].Marmolejo} className="rounded-full object-cover size-full"/></figure>
                         <input
                         onChange={getThoughts} value={thoughts}
                         type="text"

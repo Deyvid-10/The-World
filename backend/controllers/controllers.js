@@ -206,6 +206,12 @@ export class Controller{
 
     signUp = async (req, res) => {
         const data = req.body
+
+        let file = '/img/profiles/default_profile_photo.webp'
+        
+        if(req.file){
+            file =  `/img/profiles/${req.file.filename}`           
+        }
         
         const valitation = signupValidation(data)
         
@@ -237,8 +243,7 @@ export class Controller{
         
         data.password = hashedPassword
         
-        
-        const data2 = {...data}
+        const data2 = {...data, file}
 
         delete data2['conf-password']
 
@@ -259,7 +264,13 @@ export class Controller{
 
     editProfile = async (req, res) => {
 
-        const token = req.cookies.tokenSesion
+        const token = req.cookies.tokenSocialSesion
+        
+        let file = '/img/profiles/default_profile_photo.webp'
+        
+        if(req.file){
+            file =  `/img/profiles/${req.file.filename}`           
+        }
 
         if(!token){
             return res.send({error: "You are not logged"})
@@ -268,6 +279,8 @@ export class Controller{
         const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
 
         const data = req.body
+
+        console.log(data);
         
         const valitation = signupValidation(data)
 
@@ -282,7 +295,7 @@ export class Controller{
         }  
 
         const [emaillValidation] = await this.Model.getLoginCredentials(req.body.email)
-
+        
         if(emaillValidation && id !== emaillValidation.users_id){
             return res.json(({errors: true, errorsList: ['This email already exist']}))
         } 
@@ -297,13 +310,13 @@ export class Controller{
         const hashedPassword = await hashPassword(req.body.password)
 
         data.password = hashedPassword
-        data.avatar = valitation.data.avatar
-        data.users_id = id
         
-        const data2 = {...data}
+        const data2 = {...data, file}
+        data2.users_id = id
 
         delete data2['conf-password']
-
+        console.log(data2);
+        
         await this.Model.editProfile(data2)  
         
         return res.json({message: "Edited correctly"})
@@ -321,9 +334,9 @@ export class Controller{
         const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
         
         const userData = await this.Model.getUserData(id)
-        const {users_img, users_name, users_last_name, users_email} = userData[0]
+        const {users_img, users_name, users_last_name, users_email, users_bio} = userData[0]
         
-        return res.json([{users_img, users_name, users_last_name, users_email}])
+        return res.json([{users_img, users_name, users_last_name, users_email, users_bio}])
     }
 
     logOut = (req, res) => {
