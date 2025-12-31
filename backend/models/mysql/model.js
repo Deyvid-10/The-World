@@ -11,6 +11,15 @@ const connetion = await mysql.createConnection(CONFIGURATION)
 
 export class Model{
 
+    static async insertPost (postData){
+        
+        await connetion.query(
+            `
+                INSERT INTO posts (posts_description, posts_date, posts_img, posts_user) VALUES (?, ?, ?, ?)
+            `, [...Object.values(postData)]
+        )
+    }
+
     static async getMuchUsers (userName, userId){
         
         const [users] = await connetion.query(
@@ -89,22 +98,35 @@ export class Model{
         return credentials
     }
 
-    static async getUserProfile(userId, id){
+    static async getUserProfile(idProfile, idLogged){
         
         const [userProfile] = await connetion.query(
 
             `
-            SELECT DISTINCT CASE WHEN u.users_id = ? THEN "you" 
-                    ELSE u.users_id END AS users_id, f.follow_relation_id, p.posts_description, p.posts_likes, p.posts_img, p.posts_date, u.users_img, u.users_name, u.users_last_name, u.users_bio
+            SELECT CASE WHEN u.users_id = ? THEN "you" 
+                    ELSE u.users_id END AS users_id
+                    ,p.posts_description, p.posts_likes, p.posts_img, p.posts_date, u.users_img, u.users_name, u.users_last_name, u.users_bio
             FROM posts p
             RIGHT JOIN users u
             ON p.posts_user = u.users_id
-            LEFT JOIN follow_relation f
-            ON u.users_id = f.follow_relation_followed
-            WHERE u.users_id = ?
+            WHERE u.users_id = ? 
+            ORDER BY posts_id DESC
             `,
-            [id, userId]
-        )             
+            [idLogged, idProfile]
+        )   
+
+        const [isFollowed] = await connetion.query(
+            `   
+                SELECT u.users_id
+                 FROM follow_relation f
+                 INNER JOIN users u
+                 ON f.follow_relation_followed = u.users_id
+                 WHERE follow_relation_follower = ?
+            `, [idLogged]
+        )
+        
+        console.log(isFollowed);
+        
 
         const [postsQuantity] = await connetion.query(
 
@@ -115,7 +137,7 @@ export class Model{
             ON p.posts_user = u.users_id
             WHERE u.users_id = ?
             `,
-            [userId]
+            [idProfile]
         )
 
         const [userFollowers] = await connetion.query(
@@ -130,7 +152,7 @@ export class Model{
             ON f.follow_relation_follower = uf.users_id
             WHERE u.users_id = ?
             `,
-            [id, userId]
+            [idLogged, idProfile]
         )
         
         const [followersQuantity] = await connetion.query(
@@ -142,23 +164,24 @@ export class Model{
             ON f.follow_relation_followed = u.users_id
             WHERE u.users_id = ?
             `,
-            [userId]
+            [idProfile]
         ) 
         
         const [userFollowed] = await connetion.query(
 
             `
-            SELECT f.follow_relation_followed, uf.users_id, uf.users_img, uf.users_name, uf.users_last_name
+            SELECT CASE WHEN uf.users_id = ? THEN "you" 
+                    ELSE uf.users_id END AS users_id,
+            f.follow_relation_followed, f.follow_relation_follower, uf.users_img, uf.users_name, uf.users_last_name
             FROM follow_relation f
             INNER JOIN users u
             ON f.follow_relation_follower = u.users_id
             INNER JOIN users uf
             ON f.follow_relation_followed = uf.users_id
-            WHERE u.users_id = ?
+            WHERE f.follow_relation_follower = ?
             `,
-            [userId]
-        )
-        
+            [idLogged, idProfile]
+        )       
 
         const [followedsQuantity] = await connetion.query(
 
@@ -169,11 +192,11 @@ export class Model{
             ON f.follow_relation_follower = u.users_id
             WHERE u.users_id = ?
             `,
-            [userId]
+            [idProfile]
         )
         
         
-        return {userProfile, postsQuantity, userFollowers, followersQuantity, userFollowed, followedsQuantity}
+        return {userProfile, postsQuantity, userFollowers, followersQuantity, userFollowed, followedsQuantity, isFollowed}
     }
 
     static async getLoginCredentials(email){

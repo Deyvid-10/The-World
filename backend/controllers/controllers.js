@@ -10,6 +10,34 @@ export class Controller{
         this.Model = Model
     }
 
+
+    insertPost = async (req, res)=>{
+
+        const token = req.cookies.tokenSocialSesion;
+
+        if(!token){
+            return res.send(false)
+        }
+
+        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        
+        let postData = []
+
+        let file = null
+
+        if(req.file){
+            file =  `/img/posts/${req.file.filename}`           
+        }
+        
+        postData.push(req.body.thought)
+        postData.push(new Date())
+        postData.push(file)
+        postData.push(id)
+        await this.Model.insertPost(postData)
+
+        return res.json({message: "Poted successful"})
+    }
+
     getMuchUsers = async (req, res) =>{
 
         const paramId = req.params.userId
@@ -54,7 +82,7 @@ export class Controller{
         }
 
         const userData = await this.Model.getUserProfile(userId, id)
-        const {userProfile, postsQuantity, userFollowers, followersQuantity, userFollowed, followedsQuantity} = userData
+        const {userProfile, postsQuantity, userFollowers, followersQuantity, userFollowed, followedsQuantity, isFollowed} = userData
         
         
         const {users_id, users_img, users_name, users_last_name, users_bio} = userProfile[0]
@@ -64,10 +92,13 @@ export class Controller{
             users_posts = [...userProfile]
         }
         let followed = false
-        if(userProfile[0].follow_relation_id !== null){
+
+        if(isFollowed.length !== 0){
             followed = true
         }
-        console.log(userProfile[0]);
+        console.log(isFollowed);
+        console.log(id);
+        
         
         const newProfileUser = [{users_id, users_img, users_name, users_last_name, users_bio, followed,
                 ...postsQuantity[0], users_posts, 
@@ -99,7 +130,6 @@ export class Controller{
 
         const token = req.cookies.tokenSocialSesion;
         
-        
         if(!token){
             return res.send(false)
         }
@@ -107,7 +137,6 @@ export class Controller{
         const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
 
         const item = req.body
-        
         
         await this.Model.unfollowUser(item.user, id)
 

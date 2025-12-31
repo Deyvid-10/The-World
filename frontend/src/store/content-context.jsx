@@ -1,7 +1,7 @@
 import React, { createContext } from "react";
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { fetchPosts, fetchUserProfile, fetchUsers, followUser, queryClient, unfollowUser } from '../util/requests.js'
+import { fetchPosts, fetchUserProfile, fetchUsers, followUser, insertPost, queryClient, unfollowUser } from '../util/requests.js'
 import { toast } from "react-toastify";
 
 export const ContentContext = createContext({
@@ -10,6 +10,7 @@ export const ContentContext = createContext({
     userProfile: ()=>{},
     followUser: {},
     unfollowUser: {},
+    insertPost: {}
 })
 
 
@@ -58,12 +59,20 @@ export default function ContentContextProvider({children}){
         } 
     })
 
+    const {mutate: mutatePost, isPending: postIsLoading, isError: postIsError, isSuccess: postIsSuccess} = useMutation({
+        mutationFn: insertPost,
+        onSuccess: ()=>{
+            queryClient.invalidateQueries({ queryKey: ['userProfile']})
+        } 
+    })
+
     const ctxVlue = {
         posts: {postsData, postsIsLoading, postsIsError},
         users: getUsersData,
         userProfile: getUserProfile,
         followUser: {mutateFollow, followIsLoading, followIsError},
-        unfollowUser: {mutateUnfollow, unfollowIsLoading, unfollowIsError}
+        unfollowUser: {mutateUnfollow, unfollowIsLoading, unfollowIsError},
+        insertPost: {mutatePost, postIsLoading, postIsError, postIsSuccess},
     }
 
     return <ContentContext.Provider value={ctxVlue}>

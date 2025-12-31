@@ -9,6 +9,8 @@ import { useContext, useState } from "react"
 import { ContentContext } from "../store/content-context"
 import { Link } from "react-router-dom"
 
+let backendUrl =  'http://localhost:3000/'
+
 export default function PostItem({userName, userLastName, userImg, userId,postImg, postDate, postDescription, postLikes}){
 
     const [showComments, setShowComments] = useState(false)
@@ -28,7 +30,7 @@ export default function PostItem({userName, userLastName, userImg, userId,postIm
                 
             </div>
             {postImg && <figure className="overflow-hidden h-96 w-full bg-gray-300">
-                <img src={postImg}
+                <img src={backendUrl + postImg}
                     alt={"image post for " + userName}
                     className="size-full object-cover"
             

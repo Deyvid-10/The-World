@@ -16,7 +16,6 @@ export default function Profile({profileContent}){
     const { userProfileData, userProfileIsLoading, userProfileIsError, userProfileRefetch } = userProfile(userId)
     const {mutateFollow, followIsLoading, followIsError} = followUser
     const {mutateUnfollow, unfollowIsLoading, unfollowIsError} = unfollowUser
-    console.log(followIsLoading);
     
     function handleFollow(userId){
         mutateFollow(userId)

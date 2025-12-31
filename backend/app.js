@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {static as static_} from 'express';
 import { createRouter } from './routes/route.js';
 import cors from 'cors'
 import cookieParser from "cookie-parser";
@@ -8,7 +8,8 @@ const app = express()
 
 app.disable('x-powered-by')
 app.use(express.json())
-app.use(cookieParser());
+app.use(static_('public'))
+app.use(cookieParser())
 
 const corsOptions = {
     origin: 'http://localhost:5173',
@@ -19,7 +20,6 @@ const corsOptions = {
 app.use(cors(corsOptions))
 
 app.use('/', createRouter())
-
 
 const PORT = process.env.PORT ?? 3000;
 

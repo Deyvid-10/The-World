@@ -66,7 +66,8 @@ export async function followUser(user) {
   return res;
 }
 
-export async function unfollowUser(user) {  
+export async function unfollowUser(user) { 
+     
    let url = 'http://localhost:3000/user/unfollow';
    
   const response = await fetch(url, {
@@ -86,6 +87,27 @@ export async function unfollowUser(user) {
   const res  = await response.json();
   
   return res;
+}
+
+export async function insertPost(formData){
+  
+  let url = "http://localhost:3000/upload"
+  
+  const response = await fetch(url, {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the events');
+    throw error;
+  }
+
+  const res  = await response.json();
+  
+  return res;
+
 }
 
 export async function fetchPosts({}){
