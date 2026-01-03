@@ -42,6 +42,7 @@ export const createRouter = () => {
   router.get('/userMessages/:receiverId',   controller.getUserMessages);
   router.put('/viewMessages/',   controller.viewMessages);
   router.get('/chatsQuatityNotView/',   controller.chatNotViews);
+  router.get('/comments/:postId',   controller.getComments);
   router.post('/login',  uploadProfile.single("profilePhoto"), controller.logIn);
   router.post('/signup', uploadProfile.single("profilePhoto"), controller.signUp);
   router.put('/editProfile', uploadProfile.single("profilePhoto"),  controller.editProfile);

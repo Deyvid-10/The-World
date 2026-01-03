@@ -1,7 +1,7 @@
 import React, { createContext } from "react";
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { fetchPosts, fetchUserProfile, fetchUsers, followUser, getMessages, getUsersWithMessages, insertPost, quantityChatNotSeen, queryClient, unfollowUser, viewMessages } from '../util/requests.js'
+import { addComment, fetchPosts, fetchUserProfile, fetchUsers, followUser, getComments, getMessages, getUsersWithMessages, insertPost, quantityChatNotSeen, queryClient, unfollowUser, viewMessages } from '../util/requests.js'
 import { toast } from "react-toastify";
 
 export const ContentContext = createContext({
@@ -14,7 +14,9 @@ export const ContentContext = createContext({
     messages: ()=>{},
     usersMessages: ()=>{},
     viewMessages: {},
-    getQuantityChatNotSeen: ()=>{}
+    getQuantityChatNotSeen: ()=>{},
+    showComments: () =>{},
+    postComment: {}
 })
 
 
@@ -110,7 +112,24 @@ export default function ContentContextProvider({children}){
         ) 
         return { notSeenQuantityData,  notSeenQuantityIsLoading,  notSeenQuantityIsError, notSeenQuantityRefetch}
     }
-    
+
+    function showComments(postId){
+                
+        const {data: commentsData, isLoading: commentsIsLoading, isError: commentsIsError, refetch: commentsRefetch} = useQuery(
+        {
+            queryKey: ['showComments'],
+            queryFn: () => getComments(postId),
+        }
+    )
+        return  {commentsData, commentsIsLoading, commentsIsError, commentsRefetch}
+    }
+
+    const {mutate: mutateComment, data: commentAnswer, isPending: commentIsLoading, isError: commentIsError} = useMutation({
+        mutationFn: addComment,
+        onSuccess: ()=>{
+            queryClient.invalidateQueries({ queryKey: ['showComments']})
+        } 
+    })
 
     const ctxVlue = {
         posts: {postsData, postsIsLoading, postsIsError},
@@ -122,7 +141,9 @@ export default function ContentContextProvider({children}){
         messages,
         usersMessages,
         viewMessages: {mutateView, viewIsLoading, viewIsError},
-        getQuantityChatNotSeen
+        getQuantityChatNotSeen,
+        showComments,
+        postComment:  {mutateComment, commentIsLoading, commentIsError, commentAnswer}
     }
 
     return <ContentContext.Provider value={ctxVlue}>

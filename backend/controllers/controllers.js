@@ -397,24 +397,33 @@ export class Controller{
         
     }
 
+    getComments = async (req, res) =>{
+        const postId = req.params.postId
+        console.log(postId);
+        const comments = await this.Model.getComments(postId)
+
+        return res.json(comments)
+    }
+
     insertComment = async (req, res) =>{
 
-        const token = req.cookies.tokenSesion;        
-        
-        if(!token){
-            return res.send(false)
+        let comment = { ...req.body };
+
+        const token = req.cookies.tokenSocialSesion;
+        if (!token) {
+            return res.send(false);
         }
 
-        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        const { users_id: id } = jwt.verify(token, "SECRET_PASSWORD");
 
-        const comment = req.body  
+        comment.date = new Date()
         comment.user = id
         
-        const valitation = commentValidation(req.body)
-
+        const valitation = commentValidation(comment)
+        
         if(!valitation.success)
-        {            
-            return res.json({errors: true, error: "Some field is empty, please populate"})
+        {             
+            return res.json({errors: true, error: "You must write a commet"})
         } 
         
         await this.Model.insertComment(comment)

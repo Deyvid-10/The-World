@@ -90,20 +90,29 @@ export class Model{
 
      static async getPosts(idLogged){
             
-            const [credentials] = await connetion.query(
+            try{
+                const [postData] = await connetion.query(
 
             `
-            SELECT p.posts_description, p.posts_likes, p.posts_img, p.posts_date, u.users_id, u.users_img, u.users_name, u.users_last_name
-            FROM posts p
-            LEFT JOIN users u
-            ON p.posts_user = u.users_id
-            WHERE u.users_id != ? AND u.users_id IN (SELECT DISTINCT f2.follow_relation_followed FROM follow_relation f2 WHERE follow_relation_follower = ?) 
-            ORDER BY posts_id DESC
+                SELECT p.posts_id, p.posts_description, p.posts_likes, COUNT(c.comments_id) AS comments_quantity, p.posts_img, p.posts_date, u.users_id, u.users_img, u.users_name, u.users_last_name
+                FROM posts p
+                LEFT JOIN users u
+                ON p.posts_user = u.users_id
+                LEFT JOIN comments c
+                ON p.posts_id = c.comments_post_id 
+                WHERE u.users_id != ? AND u.users_id IN (SELECT DISTINCT f2.follow_relation_followed FROM follow_relation f2 WHERE follow_relation_follower = ?) 
+                GROUP BY p.posts_id, u.users_id, p.posts_description, p.posts_likes, p.posts_img, p.posts_date, u.users_id, u.users_img, u.users_name, u.users_last_name
+                ORDER BY p.posts_id DESC
             `,
             [idLogged, idLogged]
-        )
+        )           
+            return postData
+            }catch(e){
+                console.error(e);
+                
+            }
+
         
-        return credentials
     }
 
     static async getUserProfile(idProfile, idLogged){
@@ -336,12 +345,29 @@ export class Model{
         return user
     }
 
+     static async getComments(postId){
+        
+        
+        const [comments] = await connetion.query(`
+           SELECT c.comments_id, c.comments_text, c.comments_date, u.users_img, u.users_name, u.users_last_name 
+            FROM comments c
+            LEFT JOIN users u
+            ON c.comments_user_id = u.users_id
+            LEFT JOIN posts p
+            ON p.posts_id = c.comments_post_id 
+            WHERE p.posts_id = ?
+            ORDER BY c.comments_id DESC
+        `, [postId]
+    )
+        return comments
+    }
+
     static async insertComment(comment){
         
                try{
         await connetion.query(`
-            INSERT INTO products_coments (products_coments_text, products_coments_rate, products_coments_date, products_coments_prod_id, products_coments_user) 
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO comments (comments_post_id,  comments_text, comments_date, comments_user_id) 
+            VALUES (?, ?, ?, ?)
             `, [...Object.values(comment)]
         )}
         catch(e){

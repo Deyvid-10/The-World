@@ -51,14 +51,11 @@ export function commentValidation(data){
     
     const comments =  z.object({
             comment: z.string().nonempty('The comment field must not be empty'),
-            rate: z.string().nonempty(1, 'The rate field must not be empty')
         })
 
         const valitation = comments.safeParse({
             comment: data.comment,
-            rate: data.rate
         })
-        console.log(valitation);
         
     return valitation
 } 

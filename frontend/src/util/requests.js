@@ -187,8 +187,28 @@ export async function fetchUser() {
   return user;
 }
 
-export async function addComment({comment}) {  
+export async function getComments(postId) {
+  
+   let url = `http://localhost:3000/comments/${postId}`;
+   
+  const response = await fetch(url, {
+    method: 'GET',
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the events');
+    throw error;
+  }
+
+  const res  = await response.json();
+  
+  return res;
+}
+
+export async function addComment(comment) {  
    let url = 'http://localhost:3000/comment/insert';
+   console.log(comment);
    
   const response = await fetch(url, {
     method: 'POST',

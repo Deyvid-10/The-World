@@ -11,11 +11,12 @@ import { Link } from "react-router-dom"
 
 let backendUrl =  'http://localhost:3000/'
 
-export default function PostItem({userName, userLastName, userImg, userId,postImg, postDate, postDescription, postLikes}){
+export default function PostItem({postId, userName, userLastName, userImg, userId,postImg, postDate, postDescription, postLikes, commentQuantity}){
 
-    const [showComments, setShowComments] = useState(false)
+    const [showCommentsSection, setShowCommentsSection] = useState(false)
     const [like, setLike] = useState(false)
-
+    const {showComments} = useContext(ContentContext)
+    const {commentsData, commentsIsLoading, commentsIsError, commentsRefetch} = showComments(postId)
     return(
         <section className="border-b pb-3 border-gray-100 mb-3">
             <div className="flex justify-between items-center px-4 mb-3">
@@ -24,7 +25,7 @@ export default function PostItem({userName, userLastName, userImg, userId,postIm
                         <img className="rounded-full size-full object-cover" src={backendUrl + userImg} alt={"profile photo for " + userName} />
                     </figure>
                     <Link to={"/profile/" + userId + "/posts"} className="text-gray-700 font-semibold">{userName + " " + userLastName}</Link>
-                    <p className="text-gray-400">{new Date(postDate).toDateString("en-US", { day: "numeric", month: "long", year: "numeric" })}</p>
+                    <p className="text-gray-400">{new Date(postDate).toDateString("en-US", { day: "2-digit", month: "short", year: "numeric" })}</p>
                 </div>
                 {/* <UserPlusIcon className="size-6 text-gray-500 hover:text-gray-600"/> */}
                 
@@ -47,15 +48,15 @@ export default function PostItem({userName, userLastName, userImg, userId,postIm
                     {!like && <HeartIcon className="h-7"/>}
                     <p className="font-semibold">{postLikes}</p>
                 </button>}
-                <button onClick={()=>{setShowComments((prev) => !prev)}} className="flex items-center gap-1">
+                <button onClick={()=>{setShowCommentsSection((prev) => !prev)}} className="flex items-center gap-1">
                     <ChatBubbleOvalLeftEllipsisIcon className="h-7"/>
-                    <p className="font-semibold">2</p>
+                    <p className="font-semibold">{commentQuantity}</p>
                 </button>
             </div>
                 
             {
-                showComments && 
-                <div className="px-5"><Comments/></div>
+                showCommentsSection && commentsData &&
+                <div className="px-5"><Comments postId={postId} commentData={commentsData}/></div>
             }
 
             
