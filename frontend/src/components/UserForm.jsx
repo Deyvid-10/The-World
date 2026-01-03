@@ -39,9 +39,8 @@ export default function UserForm({createAccount = false, editProfile = false}){
       mutationKey: [editProfile ? 'edit-profile' : createAccount ? 'signup' : 'login'],
       onSuccess: (data) => {
           
-        queryClient.invalidateQueries({queryKey: ['user']})
-        queryClient.invalidateQueries({queryKey: ['posts']})
-        queryClient.invalidateQueries({queryKey: ['users']})
+        queryClient.invalidateQueries();
+        
         if(editProfile && data.error){
           toast.error(data.error)
         }

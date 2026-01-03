@@ -1,7 +1,7 @@
 import React, { createContext } from "react";
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { fetchPosts, fetchUserProfile, fetchUsers, followUser, insertPost, queryClient, unfollowUser } from '../util/requests.js'
+import { fetchPosts, fetchUserProfile, fetchUsers, followUser, getMessages, getUsersWithMessages, insertPost, quantityChatNotSeen, queryClient, unfollowUser, viewMessages } from '../util/requests.js'
 import { toast } from "react-toastify";
 
 export const ContentContext = createContext({
@@ -10,7 +10,11 @@ export const ContentContext = createContext({
     userProfile: ()=>{},
     followUser: {},
     unfollowUser: {},
-    insertPost: {}
+    insertPost: {},
+    messages: ()=>{},
+    usersMessages: ()=>{},
+    viewMessages: {},
+    getQuantityChatNotSeen: ()=>{}
 })
 
 
@@ -49,6 +53,7 @@ export default function ContentContextProvider({children}){
         mutationFn: followUser,
         onSuccess: ()=>{
             queryClient.invalidateQueries({ queryKey: ['userProfile']})
+            queryClient.invalidateQueries({ queryKey: ['users']})
         } 
     })
 
@@ -56,6 +61,7 @@ export default function ContentContextProvider({children}){
         mutationFn: unfollowUser,
         onSuccess: ()=>{
             queryClient.invalidateQueries({ queryKey: ['userProfile']})
+            queryClient.invalidateQueries({ queryKey: ['users']})
         } 
     })
 
@@ -66,6 +72,46 @@ export default function ContentContextProvider({children}){
         } 
     })
 
+    function messages(receiverId){
+        const {data: messageData, isLoading: messageIsLoading, isError: messageIsError} = useQuery(
+            {
+                queryKey: ['messages', {user: receiverId}],
+                queryFn: ()=>getMessages(receiverId),
+            }
+        ) 
+        return {messageData, messageIsLoading, messageIsError} 
+    }
+
+
+    function usersMessages(userId){
+        
+        const {data: userMessageData, isLoading: userMessageIsLoading, isError: userMessageIsError, refetch: userMessageRefetch} = useQuery(
+        {
+            queryKey: ['userMessages'],
+            queryFn: () => getUsersWithMessages(userId),
+        }
+    ) 
+
+    return {userMessageData, userMessageIsLoading, userMessageIsError, userMessageRefetch}
+    }
+
+    const {mutate: mutateView, isPending: viewIsLoading, isError: viewIsError} = useMutation({
+        mutationFn: viewMessages,
+        // onSuccess: ()=>{
+        //     queryClient.invalidateQueries({ queryKey: ['userProfile']})
+        // } 
+    })
+    function getQuantityChatNotSeen(){
+        const {data: notSeenQuantityData, isLoading: notSeenQuantityIsLoading, isError: notSeenQuantityIsError, refetch: notSeenQuantityRefetch} = useQuery(
+            {
+                queryKey: ['messages', 'chatNotSeen'],
+                queryFn: quantityChatNotSeen,
+            }
+        ) 
+        return { notSeenQuantityData,  notSeenQuantityIsLoading,  notSeenQuantityIsError, notSeenQuantityRefetch}
+    }
+    
+
     const ctxVlue = {
         posts: {postsData, postsIsLoading, postsIsError},
         users: getUsersData,
@@ -73,6 +119,10 @@ export default function ContentContextProvider({children}){
         followUser: {mutateFollow, followIsLoading, followIsError},
         unfollowUser: {mutateUnfollow, unfollowIsLoading, unfollowIsError},
         insertPost: {mutatePost, postIsLoading, postIsError, postIsSuccess},
+        messages,
+        usersMessages,
+        viewMessages: {mutateView, viewIsLoading, viewIsError},
+        getQuantityChatNotSeen
     }
 
     return <ContentContext.Provider value={ctxVlue}>

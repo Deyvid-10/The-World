@@ -208,3 +208,79 @@ export async function addComment({comment}) {
   
   return res;
 }
+
+export async function getMessages(receiverId) {  
+   let url = `http://localhost:3000/messages/${receiverId}`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the events');
+    throw error;
+  }
+
+  const res  = await response.json();
+  
+  return res;
+}
+
+export async function getUsersWithMessages(userId) { 
+   let url = `http://localhost:3000/userMessages/` + userId;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the events');
+    throw error;
+  }
+
+  const res  = await response.json();
+  
+  return res;
+}
+
+export async function viewMessages(user) {  
+   let url = 'http://localhost:3000/viewMessages/';
+   
+  const response = await fetch(url, {
+    method: 'PUT',
+    body: JSON.stringify({user}),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the events');
+    throw error;
+  }
+
+  const res  = await response.json();
+  
+  return res;
+}
+
+export async function quantityChatNotSeen() { 
+   let url = `http://localhost:3000/chatsQuatityNotView/`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the events');
+    throw error;
+  }
+
+  const res  = await response.json();
+  
+  return res;
+}

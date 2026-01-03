@@ -10,7 +10,6 @@ export class Controller{
         this.Model = Model
     }
 
-
     insertPost = async (req, res)=>{
 
         const token = req.cookies.tokenSocialSesion;
@@ -96,9 +95,7 @@ export class Controller{
         if(isFollowed.length !== 0){
             followed = true
         }
-        console.log(isFollowed);
-        console.log(id);
-        
+
         
         const newProfileUser = [{users_id, users_img, users_name, users_last_name, users_bio, followed,
                 ...postsQuantity[0], users_posts, 
@@ -143,6 +140,23 @@ export class Controller{
         return res.send({message: "Your unfollow this user now"})
     }
 
+    viewMessages = async (req, res) => {
+
+        const token = req.cookies.tokenSocialSesion;
+        
+        if(!token){
+            return res.send(false)
+        }
+        
+        
+        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+
+        const user = req.body.user
+                        
+        await this.Model.viewMessages(id, user)
+
+        return res.send({message: "Succesful"})
+    }
 
     getPosts = async (req, res) =>{
         const token = req.cookies.tokenSocialSesion;
@@ -279,8 +293,6 @@ export class Controller{
         const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
 
         const data = req.body
-
-        console.log(data);
         
         const valitation = signupValidation(data)
 
@@ -315,7 +327,6 @@ export class Controller{
         data2.users_id = id
 
         delete data2['conf-password']
-        console.log(data2);
         
         await this.Model.editProfile(data2)  
         
@@ -326,7 +337,6 @@ export class Controller{
     getUserInfo = async (req, res) => {
 
         const token = req.cookies.tokenSocialSesion;
-        
         if(token === undefined){
             return res.send(false)
         }
@@ -337,6 +347,48 @@ export class Controller{
         const {users_img, users_name, users_last_name, users_email, users_bio} = userData[0]
         
         return res.json([{users_img, users_name, users_last_name, users_email, users_bio}])
+    }
+
+    getMessages = async (req, res) => {
+        const receiverId = Number(req.params.receiverId)    
+        try {
+            const token  = req.cookies.tokenSocialSesion; 
+            if(!token){
+                return res.send({error: "You are not logged"})
+            }
+        
+            const {users_id: userTransmitter} = jwt.verify(token, "SECRET_PASSWORD")
+        
+            const messages = await this.Model.getMessages(userTransmitter, receiverId)  
+            
+            return res.json(messages);
+        
+        
+        } catch (err) {
+            console.log(err);
+            
+            res.status(500).json({ error: err.message });
+        }
+    };
+    
+    getUserMessages =  async (req, res) => {
+
+        const receiverId = Number(req.params.receiverId)
+        
+      try {
+        const token  = req.cookies.tokenSocialSesion; 
+        if(!token){
+            return res.send({error: "You are not logged"})
+        }
+    
+        const {users_id: userTransmitter} = jwt.verify(token, "SECRET_PASSWORD")
+        const userMessages = await this.Model.getUserMessages(userTransmitter, receiverId)
+        res.json(userMessages);
+      } catch (err) {
+        console.log(err);
+        
+        res.status(500).json({ error: err.message });
+      }
     }
 
     logOut = (req, res) => {
@@ -371,5 +423,19 @@ export class Controller{
         
 
         return res.json({message: "Comment submited"})
+    }
+
+    chatNotViews = async (req, res) =>{
+        const token = req.cookies.tokenSocialSesion; 
+        if(!token){
+            return res.send(false)
+        }
+        
+        
+        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+
+        const chatsQuatity = await this.Model.chatNotViews(id)
+        
+        return res.json(chatsQuatity)
     }
 }

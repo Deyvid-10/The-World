@@ -20,15 +20,18 @@ export class Model{
         )
     }
 
-    static async getMuchUsers (userName, userId){
+    static async getMuchUsers (userName, idlogged){
         
         const [users] = await connetion.query(
             `
-                SELECT u.users_id, u.users_img, u.users_name, u.users_last_name
+                SELECT DISTINCT
+                CASE WHEN u.users_id IN (SELECT DISTINCT f2.follow_relation_followed FROM follow_relation f2 WHERE follow_relation_follower = ?) THEN true
+                    ELSE false END AS isFollowed,
+                u.users_id, u.users_img, u.users_name, u.users_last_name
                 FROM users u
                 WHERE UPPER(CONCAT(users_name, " ",users_last_name)) like ? 
                 AND users_id != ?
-            `, ["%" +  userName + "%", userId]
+            `, [idlogged, "%" +  userName + "%", idlogged]
         )
 
         return users
@@ -39,17 +42,21 @@ export class Model{
         const [users] = await connetion.query(
             `
                 SELECT DISTINCT 
-                u.users_id, u.users_img, u.users_name, u.users_last_name, follow_relation_id
+                    CASE WHEN u.users_id IN (SELECT DISTINCT f2.follow_relation_followed FROM follow_relation f2 WHERE follow_relation_follower = ?) THEN true
+                    ELSE false END AS isFollowed,
+                u.users_id, u.users_img, u.users_name, u.users_last_name
                 FROM users u
-                LEFT JOIN follow_relation f
-                ON u.users_id = f.follow_relation_follower
-                WHERE u.users_id != ? and f.follow_relation_id IS NULL
+                WHERE u.users_id != ?  AND u.users_id NOT IN (SELECT DISTINCT f2.follow_relation_followed FROM follow_relation f2 WHERE follow_relation_follower = ?) 
                 ORDER BY RAND()
                 LIMIT 4
-            `, [userLogged]
-        )
+            `, [userLogged, userLogged,  userLogged]
+        ) 
+           
 
         return users
+
+        
+        
     }
 
     
@@ -81,7 +88,7 @@ export class Model{
     }   
 
 
-     static async getPosts(userId){
+     static async getPosts(idLogged){
             
             const [credentials] = await connetion.query(
 
@@ -90,9 +97,10 @@ export class Model{
             FROM posts p
             LEFT JOIN users u
             ON p.posts_user = u.users_id
-            WHERE u.users_id != ?
+            WHERE u.users_id != ? AND u.users_id IN (SELECT DISTINCT f2.follow_relation_followed FROM follow_relation f2 WHERE follow_relation_follower = ?) 
+            ORDER BY posts_id DESC
             `,
-            [userId]
+            [idLogged, idLogged]
         )
         
         return credentials
@@ -117,13 +125,15 @@ export class Model{
 
         const [isFollowed] = await connetion.query(
             `   
-                SELECT u.users_id
+                SELECT u.users_id, f.follow_relation_follower
                  FROM follow_relation f
                  INNER JOIN users u
                  ON f.follow_relation_followed = u.users_id
-                 WHERE follow_relation_follower = ?
-            `, [idLogged]
+                WHERE u.users_id = ? AND f.follow_relation_follower = ?
+            `, [idProfile, idLogged]
+
         )
+        
         
 
         const [postsQuantity] = await connetion.query(
@@ -142,7 +152,10 @@ export class Model{
 
             `
             SELECT CASE WHEN uf.users_id = ? THEN "you" 
-                    ELSE uf.users_id END AS users_id, f.follow_relation_follower, uf.users_img, uf.users_name, uf.users_last_name
+                    ELSE uf.users_id END AS users_id, 
+                    CASE WHEN uf.users_id IN (SELECT DISTINCT f2.follow_relation_followed FROM follow_relation f2 WHERE follow_relation_follower = ?) THEN true
+                    ELSE false END AS isFollowed,
+                    f.follow_relation_follower, uf.users_img, uf.users_name, uf.users_last_name
             FROM follow_relation f
             INNER JOIN users u
             ON f.follow_relation_followed = u.users_id
@@ -150,8 +163,8 @@ export class Model{
             ON f.follow_relation_follower = uf.users_id
             WHERE u.users_id = ?
             `,
-            [idLogged, idProfile]
-        )
+            [idLogged, idLogged, idProfile]
+        )        
         
         const [followersQuantity] = await connetion.query(
 
@@ -168,8 +181,11 @@ export class Model{
         const [userFollowed] = await connetion.query(
 
             `
-            SELECT CASE WHEN uf.users_id = ? THEN "you" 
+            SELECT DISTINCT CASE WHEN uf.users_id = ? THEN "you" 
                     ELSE uf.users_id END AS users_id,
+
+                    CASE WHEN uf.users_id IN (SELECT DISTINCT f2.follow_relation_followed FROM follow_relation f2 WHERE follow_relation_follower = ?) THEN true
+                    ELSE false END AS isFollowed,
             f.follow_relation_followed, f.follow_relation_follower, uf.users_img, uf.users_name, uf.users_last_name
             FROM follow_relation f
             INNER JOIN users u
@@ -178,23 +194,92 @@ export class Model{
             ON f.follow_relation_followed = uf.users_id
             WHERE f.follow_relation_follower = ?
             `,
-            [idLogged, idProfile]
-        )       
+            [idLogged, idLogged, idProfile]
+        )            
 
         const [followedsQuantity] = await connetion.query(
 
             `
-            SELECT COUNT(f.follow_relation_followed) as followed_quantity
-            FROM follow_relation f
-            INNER JOIN users u
-            ON f.follow_relation_follower = u.users_id
-            WHERE u.users_id = ?
+                SELECT COUNT(f.follow_relation_followed) as followed_quantity
+                FROM follow_relation f
+                INNER JOIN users u
+                ON f.follow_relation_follower = u.users_id
+                WHERE u.users_id = ?
             `,
             [idProfile]
         )
         
         
         return {userProfile, postsQuantity, userFollowers, followersQuantity, userFollowed, followedsQuantity, isFollowed}
+    }
+
+    static async getMessages(userTransmitter, receiverId){
+            const [messages] = await connetion.query(
+                `SELECT 
+                    CASE 
+                        WHEN messages_transmitter = ? THEN "transmitter"
+                        WHEN messages_transmitter = ? THEN "receiver"
+                    END AS type ,
+                    CASE 
+                        WHEN messages_transmitter = 38 THEN u.users_id
+                         WHEN messages_receiver = 38 THEN u2.users_id
+                    END AS users_id ,
+                    CASE 
+                        WHEN messages_receiver = 38 THEN u2.users_img
+                        WHEN messages_transmitter = 38 THEN u.users_img
+                    END AS users_img ,
+                    CASE 
+                        WHEN messages_receiver = 38 THEN u2.users_last_name
+                         WHEN messages_transmitter = 38 THEN u.users_last_name
+                    END AS users_last_name ,
+                    CASE 
+                        WHEN messages_transmitter = 38 THEN u.users_name
+                        ELSE u2.users_name
+                    END AS users_name, 
+                    m.messages_content as message, m.messages_date
+                    FROM messages m
+                    LEFT JOIN users u
+                    ON m.messages_receiver = u.users_id 
+                    LEFT JOIN users u2
+                    ON m.messages_transmitter = u2.users_id
+                    WHERE (messages_transmitter = ? AND messages_receiver = ?) or (messages_transmitter = ? AND messages_receiver = ?)`, 
+                    [userTransmitter, receiverId, userTransmitter, receiverId, receiverId, userTransmitter])
+        
+        
+        return messages
+    }
+
+    static async getUserMessages (userLogged, chatUser){
+        
+        console.log(chatUser);
+        console.log(userLogged);
+        
+        
+        const [userMessages] = await connetion.query(
+        `SELECT  SUM(CASE WHEN m.messages_view = 0 AND m.messages_receiver = ? THEN 1 ELSE 0 END)  AS messagesNotViewed,
+            MAX(m.messages_date),
+            MAX(m.messages_view),
+            u.users_id, u.users_img, u.users_name, u.users_last_name
+            FROM follow_relation f
+            LEFT JOIN users u
+            ON  f.follow_relation_followed = u.users_id
+            LEFT JOIN messages m
+            ON m.messages_transmitter = u.users_id
+            WHERE f.follow_relation_follower = ? AND u.users_id != ? 
+            GROUP BY u.users_id, u.users_img, u.users_name, u.users_last_name
+            ORDER BY MAX(m.messages_date) DESC, MAX(m.messages_view) DESC
+            `, 
+            [userLogged , userLogged, userLogged])
+            console.log(userMessages);
+            
+        return userMessages
+    }
+
+
+
+    static async insertMessage(userTransmitter, userReceiver, message){
+        await connetion.query("INSERT INTO messages (messages_transmitter, messages_receiver, messages_content) VALUES (?, ?, ?)",
+        [userTransmitter, userReceiver, message])
     }
 
     static async getLoginCredentials(email){
@@ -264,4 +349,23 @@ export class Model{
         
        }
     }   
+    static async viewMessages(userLogged, userChat){
+        
+        await connetion.query(`
+            UPDATE messages SET messages_view = 1 WHERE (messages_view = 0 AND messages_receiver = ? AND messages_transmitter = ?)
+        `, [userLogged, userChat]
+    )
+    }
+
+    static async chatNotViews(userLogged){
+        
+        
+        const [chatsQuatity] = await connetion.query(`
+            SELECT COUNT(DISTINCT messages_transmitter) AS chatsNotSeen
+            FROM  messages
+            WHERE messages_view = 0 AND messages_receiver = ?
+        `, [userLogged]
+    )
+        return chatsQuatity
+    }
 }

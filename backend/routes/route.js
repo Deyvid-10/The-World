@@ -38,7 +38,11 @@ export const createRouter = () => {
   router.post('/user/follow',   controller.followUser);
   router.delete('/user/unfollow',   controller.unfollowUser);
   router.get('/posts',   controller.getPosts);
-  router.post('/login',   controller.logIn);
+  router.get('/messages/:receiverId',   controller.getMessages);
+  router.get('/userMessages/:receiverId',   controller.getUserMessages);
+  router.put('/viewMessages/',   controller.viewMessages);
+  router.get('/chatsQuatityNotView/',   controller.chatNotViews);
+  router.post('/login',  uploadProfile.single("profilePhoto"), controller.logIn);
   router.post('/signup', uploadProfile.single("profilePhoto"), controller.signUp);
   router.put('/editProfile', uploadProfile.single("profilePhoto"),  controller.editProfile);
   router.post('/logout',   controller.logOut);

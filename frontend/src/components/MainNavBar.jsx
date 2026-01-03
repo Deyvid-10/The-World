@@ -19,6 +19,7 @@ import { SesionContext } from '../store/sesion-context';
 import { fetchLogout, queryClient } from '../util/requests';
 import { useMutation } from '@tanstack/react-query';
 import IsLoading from './IsLoading';
+import { ContentContext } from '../store/content-context';
 
 let urlBackend = 'http://localhost:3000'
 
@@ -26,7 +27,10 @@ export default function MainNavBar() {
 
  const {user} = useContext(SesionContext)
 
+ const {getQuantityChatNotSeen} = useContext(ContentContext)
+
   const {data: userData, isLoading: userIsLoanding, isError: isErrorUser} = user
+  const {notSeenQuantityData,  notSeenQuantityIsLoading,  notSeenQuantityIsError} = getQuantityChatNotSeen()
 
   useEffect(()=>{
     
@@ -150,7 +154,7 @@ export default function MainNavBar() {
                       <MenuButton className="relative p-2 hover:cursor-pointer">
                         <BellIcon aria-hidden="true"
                               className="size-7 shrink-0 text-gray-400 hover:text-gray-500 "/>
-                        <span className='absolute top-0 left-1 size-5 text-sm bg-red-600 rounded-full text-white'>1</span>
+                        <span className='absolute top-0 left-1 size-5 text-sm bg-red-600 rounded-full text-white'>2</span>
                       </MenuButton>
                       <MenuItems
                         transition
@@ -166,11 +170,12 @@ export default function MainNavBar() {
                   
                       </MenuItems>
                   </Menu>
-                   <div className="relative p-2 hover:cursor-pointer">
+                  {notSeenQuantityIsLoading && <IsLoading></IsLoading>}
+                    {notSeenQuantityData &&  <Link to="chats/0" className="relative p-2 hover:cursor-pointer">
                       <ChatBubbleLeftEllipsisIcon aria-hidden="true"
                             className="size-7 shrink-0 text-gray-400 hover:text-gray-500 "/>
-                      <span className='absolute top-0 left-1 text-center size-5 text-sm bg-red-600 rounded-full text-white'>1</span>
-                    </div>
+                      {notSeenQuantityData[0].chatsNotSeen != 0 && <span className='absolute top-0 left-1 text-center size-5 text-sm bg-red-600 rounded-full text-white'>{notSeenQuantityData[0].chatsNotSeen}</span>}
+                    </Link>}
                 </section>
                 }
               </div>

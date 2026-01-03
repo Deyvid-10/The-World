@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useEffect, useState } from "react";
 import './App.css'
 
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
@@ -31,7 +31,7 @@ const router = createBrowserRouter([{
       {path:'profile/:userId/followers', element:<Profile profileContent={"follower"}/>},
       {path:'profile/:userId/followed', element:<Profile profileContent={"followed"}/>},
       {path:'search-profiles', element:<ProfilesPage />},
-      {path:'chats', element:<ChatsPage />},
+      {path:'chats/:userId', element:<ChatsPage />},
     ]},
   
     {path:"/log-in", element: <LogInPage/>},
@@ -41,18 +41,24 @@ const router = createBrowserRouter([{
   ])
 
 function App() {
+  
 
   return (
+
+   
+
     
     <QueryClientProvider client={queryClient}>
       <ContentContextProvider>
         <SesionContextProvider>
+          <ToastContainer />
           <RouterProvider router={router}>
-            <ToastContainer></ToastContainer>
           </RouterProvider>
         </SesionContextProvider>
       </ContentContextProvider>
     </QueryClientProvider>
+
+    
   )
 }
 
