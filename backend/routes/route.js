@@ -5,6 +5,7 @@ import multer from "multer"
 
 export const createRouter = () => {
 
+  // Saving both the credentials form and the posts images
   const storagePosts = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, "public/img/posts"); 
@@ -28,7 +29,7 @@ export const createRouter = () => {
   const uploadProfile = multer({ storage: storageProfiles });
 
 
-
+  // All the router for the API
   const router = Router();
   const controller = new Controller ({Model: Model})
 
@@ -38,6 +39,8 @@ export const createRouter = () => {
   router.post('/user/follow',   controller.followUser);
   router.delete('/user/unfollow',   controller.unfollowUser);
   router.get('/posts',   controller.getPosts);
+  router.post('/posts/like',   controller.like);
+  router.delete('/posts/disLike',   controller.disLike);
   router.get('/messages/:receiverId',   controller.getMessages);
   router.get('/userMessages/:receiverId',   controller.getUserMessages);
   router.put('/viewMessages/',   controller.viewMessages);

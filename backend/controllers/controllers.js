@@ -81,21 +81,21 @@ export class Controller{
         }
 
         const userData = await this.Model.getUserProfile(userId, id)
-        const {userProfile, postsQuantity, userFollowers, followersQuantity, userFollowed, followedsQuantity, isFollowed} = userData
+        const {userProfile, posts, postsQuantity, userFollowers, followersQuantity, userFollowed, followedsQuantity, isFollowed} = userData
         
         
         const {users_id, users_img, users_name, users_last_name, users_bio} = userProfile[0]
         let users_posts = []
         
         if(userProfile[0].posts_description !== null){
-            users_posts = [...userProfile]
+            users_posts = [...posts]
         }
         let followed = false
 
         if(isFollowed.length !== 0){
             followed = true
         }
-
+        
         
         const newProfileUser = [{users_id, users_img, users_name, users_last_name, users_bio, followed,
                 ...postsQuantity[0], users_posts, 
@@ -138,6 +138,42 @@ export class Controller{
         await this.Model.unfollowUser(item.user, id)
 
         return res.send({message: "Your unfollow this user now"})
+    }
+
+    like = async (req, res) => {
+
+        const token = req.cookies.tokenSocialSesion;
+        
+        
+        if(!token){
+            return res.send(false)
+        }
+
+        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+
+        const postId = req.body.postId
+        console.log(postId);
+                    
+        await this.Model.like(postId, id)
+
+        return res.send({message: "You like this post now"})
+    }
+
+    disLike = async (req, res) => {
+
+        const token = req.cookies.tokenSocialSesion;
+        
+        if(!token){
+            return res.send(false)
+        }
+
+        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+
+        const postId = req.body.postId
+        console.log(postId);          
+        await this.Model.disLike(postId, id)
+
+        return res.send({message: "You dislike this post now"})
     }
 
     viewMessages = async (req, res) => {
@@ -209,7 +245,7 @@ export class Controller{
             return res.json(({errors: true, errorsList: ['Password incorrect']}))
         }       
 
-        const token = jwt.sign({users_id: credentials.users_id}, "SECRET_PASSWORD", {expiresIn: '1h'})
+        const token = jwt.sign({users_id: credentials.users_id}, "SECRET_PASSWORD", {expiresIn: '4h'})
         
         return res.cookie("tokenSocialSesion", token, {
             httpOnly: true, 
@@ -267,7 +303,7 @@ export class Controller{
         
         const [{users_id}] = await this.Model.getLoginCredentials(req.body.email)
         
-        const token = jwt.sign({users_id}, "SECRET_PASSWORD", {expiresIn: '1h'})
+        const token = jwt.sign({users_id}, "SECRET_PASSWORD", {expiresIn: '4h'})
         
         return res.cookie("tokenSocialSesion", token, {
             httpOnly: true, 
@@ -344,9 +380,9 @@ export class Controller{
         const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
         
         const userData = await this.Model.getUserData(id)
-        const {users_img, users_name, users_last_name, users_email, users_bio} = userData[0]
+        const {users_id, users_img, users_name, users_last_name, users_email, users_bio} = userData[0]
         
-        return res.json([{users_img, users_name, users_last_name, users_email, users_bio}])
+        return res.json([{users_id, users_img, users_name, users_last_name, users_email, users_bio}])
     }
 
     getMessages = async (req, res) => {
@@ -399,7 +435,6 @@ export class Controller{
 
     getComments = async (req, res) =>{
         const postId = req.params.postId
-        console.log(postId);
         const comments = await this.Model.getComments(postId)
 
         return res.json(comments)

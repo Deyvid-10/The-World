@@ -9,18 +9,24 @@ import PrincipalComment from "./PrincipalComment"
 import SecondaryComment from "./SecondaryComment"
 import { useContext } from "react"
 import { ContentContext } from "../store/content-context"
-export default function Comments({postId, commentData}){
+export default function Comments({postId, setCommentQuantityState}){
 
-    const {postComment} = useContext(ContentContext)
+    const {postComment, showComments} = useContext(ContentContext)
     const {mutateComment, commentAnswer, commentIsLoading, commentIsError} = postComment
+    const {commentsData, commentsIsLoading, commentsIsError} = showComments(postId)
 
     function handlePostComment(event){
-         event.preventDefault()
+        event.preventDefault()
     
         const fd = new FormData(event.target)
         const commentFD =  {postId, ...Object.fromEntries(fd.entries())}
         
-        mutateComment(commentFD)
+        mutateComment(commentFD, {onSuccess: () => {
+                event.target.reset();
+                setCommentQuantityState((prev)=>prev + 1)
+            },
+        }) 
+        
         
     }
     
@@ -38,7 +44,7 @@ export default function Comments({postId, commentData}){
                 <button className="ml-auto rounded-full w-36 bg-emerald-500 px-3 py-0.5 font-semibold text-white shadow-xs hover:bg-emerald-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400">Post comment</button>
             </form>
 
-            {commentData && commentData.map((comment, index)=>(
+            {commentsData && commentsData.map((comment, index)=>(
                 <PrincipalComment key={comment.comments_id} comment={comment} />
             ))}
             {/* <SecondaryComment/> */}

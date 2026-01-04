@@ -1,5 +1,6 @@
 import {z} from 'zod'
 
+// Validation for login fields
 export function loginValidation(data){
     
     const loginCredentials =  z.object({
@@ -17,6 +18,7 @@ export function loginValidation(data){
     return valitation
 } 
 
+// Validation for signup fields
 export function signupValidation(data){
     const loginCredentials =  z.object({
             name: z.string().nonempty("The name field is required"),
@@ -47,6 +49,7 @@ export function signupValidation(data){
         return valitation
 }
 
+// Validation for the comment field
 export function commentValidation(data){
     
     const comments =  z.object({

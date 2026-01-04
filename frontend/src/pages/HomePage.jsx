@@ -8,6 +8,7 @@ import React, { useContext, useEffect, useRef, useState } from "react"
 import { SesionContext } from "../store/sesion-context"
 import { ContentContext } from "../store/content-context"
 import PostsList from "../components/PostsList"
+import { toast } from "react-toastify"
 
 let url = 'http://localhost:3000/'
 
@@ -87,8 +88,8 @@ export default function HomePage(){
     return(
         <GeneralStructure>
             {/* post section */}
-            {userData && <section  className="flex flex-col gap-3 max-w-[800px]">
-                <secction className="w-full bg-white rounded-2xl border p-4 border-gray-200">
+            {userData && <div  className="flex flex-col gap-3 max-w-[800px]">
+                <div className="w-full bg-white rounded-2xl border p-4 border-gray-200">
                     <div className="flex items-center gap-2 ">
                         <figure className="size-14"><img src={url + userData[0].users_img}  alt={"Profile image for " + userData[0].Marmolejo} className="rounded-full object-cover size-full"/></figure>
                         <input
@@ -116,10 +117,10 @@ export default function HomePage(){
                         </div>
                         <button onClick={handlePost} className="rounded-full text-lg bg-emerald-500 px-3 py-0.5 font-semibold text-white shadow-xs hover:bg-emerald-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400">Post</button>
                     </div>
-                </secction>
+                </div>
                 
                 <PostsList postsData={postsData} postsIsLoading={postsIsLoading} style="w-full flex flex-col gap-4 bg-white rounded-2xl border py-4 border-gray-200"></PostsList>
-            </section>}
+            </div>}
         </GeneralStructure>
     )
 }

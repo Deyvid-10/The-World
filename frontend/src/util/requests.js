@@ -88,6 +88,51 @@ export async function unfollowUser(user) {
   return res;
 }
 
+export async function like(postId) {  
+   let url = 'http://localhost:3000/posts/like';
+   
+  const response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify({postId}),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the events');
+    throw error;
+  }
+
+  const res  = await response.json();
+  
+  return res;
+}
+
+export async function disLike(postId) { 
+     
+   let url = 'http://localhost:3000/posts/disLike';
+   
+  const response = await fetch(url, {
+    method: 'DELETE',
+    body: JSON.stringify({postId}),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the events');
+    throw error;
+  }
+
+  const res  = await response.json();
+  
+  return res;
+}
+
 export async function insertPost(formData){
   
   let url = "http://localhost:3000/upload"
@@ -190,11 +235,11 @@ export async function fetchUser() {
 export async function getComments(postId) {
   
    let url = `http://localhost:3000/comments/${postId}`;
-   
+   console.log(postId);
   const response = await fetch(url, {
-    method: 'GET',
-    credentials: "include",
-  });
+      method: 'GET',
+      credentials: "include",
+    });
 
   if (!response.ok) {
     const error = new Error('An error occurred while fetching the events');
@@ -208,7 +253,6 @@ export async function getComments(postId) {
 
 export async function addComment(comment) {  
    let url = 'http://localhost:3000/comment/insert';
-   console.log(comment);
    
   const response = await fetch(url, {
     method: 'POST',

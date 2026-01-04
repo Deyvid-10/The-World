@@ -8,15 +8,59 @@ import PrincipalComment from "./PrincipalComment"
 import { useContext, useState } from "react"
 import { ContentContext } from "../store/content-context"
 import { Link } from "react-router-dom"
+import { useEffect } from "react"
 
 let backendUrl =  'http://localhost:3000/'
 
-export default function PostItem({postId, userName, userLastName, userImg, userId,postImg, postDate, postDescription, postLikes, commentQuantity}){
+export default function PostItem({postId, userName, userLastName, userImg, userId,postImg, postDate, postDescription, likesQuantity, liked, commentQuantity}){
 
     const [showCommentsSection, setShowCommentsSection] = useState(false)
-    const [like, setLike] = useState(false)
-    const {showComments} = useContext(ContentContext)
-    const {commentsData, commentsIsLoading, commentsIsError, commentsRefetch} = showComments(postId)
+    const [commentQuantityState, setCommentQuantityState] = useState(commentQuantity)
+    const {showComments, like, disLike} = useContext(ContentContext)
+    // const [isLike, setIsLike] = likeState
+    // const [thisLikesQuantity, setThisLikesQuantity] = likesQuantityState
+    const {mutateLike, liekIsLoading, likeIsError} = like 
+    const {mutateDisLike, disLikeIsLoading, disLikeIsError} = disLike
+    
+    const [isLike, setIsLike] = useState(liked)
+    const [thisLikesQuantity, setThisLikesQuantity] = useState(likesQuantity)
+    
+    
+    useEffect(()=>{
+        
+        if(likeIsError){            
+            
+        }
+        if(disLikeIsError){            
+            
+        }
+    }, [likeIsError, disLikeIsError])
+    
+    function handleLike(){
+        mutateLike(postId, {onSuccess: () => {
+            setIsLike(1)
+            setThisLikesQuantity((prev)=> prev+1)
+        },
+        onError: (error) => {
+            setIsLike(0)
+            setThisLikesQuantity((prev)=> prev-1)
+        }})
+        
+        
+    }
+
+    function handleDisLike(){
+        mutateDisLike(postId, {onSuccess: () => {
+            setIsLike(0)
+            setThisLikesQuantity((prev)=> prev-1)
+        },
+        onError: (error) => {
+            setIsLike(1)
+            setThisLikesQuantity((prev)=> prev+1)
+        }})
+        
+    }
+
     return(
         <section className="border-b pb-3 border-gray-100 mb-3">
             <div className="flex justify-between items-center px-4 mb-3">
@@ -42,21 +86,25 @@ export default function PostItem({postId, userName, userLastName, userImg, userI
                 
             <p className="px-4 text-gray-600 mt-3">{postDescription}</p>
             <div className="px-4 flex gap-2 text-gray-500 mt-2">            
-               
-                {<button onClick={()=>{setLike((prev) => !prev)}} className="flex items-center gap-1">
-                    {like && <HeartIconSolid className="h-7 text-emerald-400"/>}
-                    {!like && <HeartIcon className="h-7"/>}
-                    <p className="font-semibold">{postLikes}</p>
-                </button>}
+                
+                {<div className="flex items-center gap-1">
+                    {isLike == 1 && <button onClick={handleDisLike}>
+                        <HeartIconSolid className="h-7 text-emerald-400"/>
+                    </button>}
+                    {isLike == 0 && <button onClick={handleLike}>
+                        <HeartIcon className="h-7"/>
+                    </button>}
+                    <p className="font-semibold">{thisLikesQuantity}</p>
+                </div>}
                 <button onClick={()=>{setShowCommentsSection((prev) => !prev)}} className="flex items-center gap-1">
                     <ChatBubbleOvalLeftEllipsisIcon className="h-7"/>
-                    <p className="font-semibold">{commentQuantity}</p>
+                    <p className="font-semibold">{commentQuantityState}</p>
                 </button>
             </div>
                 
             {
-                showCommentsSection && commentsData &&
-                <div className="px-5"><Comments postId={postId} commentData={commentsData}/></div>
+                showCommentsSection && 
+                <div className="px-5"><Comments postId={postId} setCommentQuantityState={setCommentQuantityState}/></div>
             }
 
             

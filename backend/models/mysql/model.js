@@ -1,10 +1,16 @@
 import mysql from "mysql2/promise";
+import dotenv from "dotenv";
 
+// environment variable source
+const envFile = process.env.ENV_FILE || "./dev.env";
+dotenv.config({ path: envFile });
+
+// Configure data base connection
 const CONFIGURATION = {
-  host: "localhost",
-  user: "root",
-  password: "Contrasena20",
-  database: "social-media"
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_DATABASE
 };
 
 const connetion = await mysql.createConnection(CONFIGURATION)
@@ -21,7 +27,6 @@ export class Model{
     }
 
     static async getMuchUsers (userName, idlogged){
-        
         const [users] = await connetion.query(
             `
                 SELECT DISTINCT
@@ -51,68 +56,61 @@ export class Model{
                 LIMIT 4
             `, [userLogged, userLogged,  userLogged]
         ) 
-           
-
-        return users
-
-        
-        
+        return users 
     }
 
-    
     static async followUser(userFollowed, userFollower){
-        
-               try{
             await connetion.query(`
                 INSERT INTO follow_relation (follow_relation_followed, follow_relation_follower) 
                 VALUES (?, ?)
-                `, [userFollowed, userFollower]
-        )}
-        catch(e){
-        console.error(e);
-        
-       }
+                `, [userFollowed, userFollower])
     }   
 
     static async unfollowUser(userFollowed, userFollower){
-        
-               try{
+      
             await connetion.query(`
                 DELETE FROM follow_relation WHERE follow_relation_followed  = ? AND follow_relation_follower = ? 
                 `, [userFollowed, userFollower]
-        )}
-        catch(e){
-        console.error(e);
-        
-       }
+        )
+    }   
+
+    static async like(postId, idLogged){
+
+            await connetion.query(`
+                INSERT INTO likes (likes_post_id, likes_user_id) 
+                VALUES (?, ?)
+                `, [postId, idLogged]
+        )
+    }   
+
+    static async disLike(postId, idLogged){
+            await connetion.query(`
+                DELETE FROM likes WHERE likes_post_id  = ? AND likes_user_id = ? 
+                `, [postId, idLogged]
+        )
     }   
 
 
      static async getPosts(idLogged){
-            
-            try{
-                const [postData] = await connetion.query(
 
+            const [postData] = await connetion.query(
+                    
             `
-                SELECT p.posts_id, p.posts_description, p.posts_likes, COUNT(c.comments_id) AS comments_quantity, p.posts_img, p.posts_date, u.users_id, u.users_img, u.users_name, u.users_last_name
+                SELECT p.posts_id, p.posts_description, SUM(DISTINCT CASE WHEN l.likes_user_id = ? THEN 1 ELSE 0 END) AS liked, COUNT(DISTINCT l.likes_id) AS likes_quantity, COUNT(DISTINCT c.comments_id) AS comments_quantity, p.posts_img, p.posts_date, u.users_id, u.users_img, u.users_name, u.users_last_name
                 FROM posts p
                 LEFT JOIN users u
                 ON p.posts_user = u.users_id
                 LEFT JOIN comments c
                 ON p.posts_id = c.comments_post_id 
+                LEFT JOIN likes l
+                ON p.posts_id = l.likes_post_id
                 WHERE u.users_id != ? AND u.users_id IN (SELECT DISTINCT f2.follow_relation_followed FROM follow_relation f2 WHERE follow_relation_follower = ?) 
-                GROUP BY p.posts_id, u.users_id, p.posts_description, p.posts_likes, p.posts_img, p.posts_date, u.users_id, u.users_img, u.users_name, u.users_last_name
+                GROUP BY  p.posts_id, u.users_id, p.posts_description, p.posts_img, p.posts_date, u.users_id, u.users_img, u.users_name, u.users_last_name
                 ORDER BY p.posts_id DESC
             `,
-            [idLogged, idLogged]
+            [idLogged, idLogged, idLogged]
         )           
             return postData
-            }catch(e){
-                console.error(e);
-                
-            }
-
-        
     }
 
     static async getUserProfile(idProfile, idLogged){
@@ -121,8 +119,8 @@ export class Model{
 
             `
             SELECT CASE WHEN u.users_id = ? THEN "you" 
-                    ELSE u.users_id END AS users_id
-                    ,p.posts_description, p.posts_likes, p.posts_img, p.posts_date, u.users_img, u.users_name, u.users_last_name, u.users_bio
+                    ELSE u.users_id END AS users_id, 
+                    u.users_bio, u.users_img, u.users_name, u.users_last_name
             FROM posts p
             RIGHT JOIN users u
             ON p.posts_user = u.users_id
@@ -143,7 +141,22 @@ export class Model{
 
         )
         
-        
+        const [posts] = await connetion.query(
+             `
+                SELECT p.posts_id, p.posts_description, SUM(DISTINCT CASE WHEN l.likes_user_id = ? THEN 1 ELSE 0 END) AS liked, COUNT(DISTINCT l.likes_id) AS likes_quantity, COUNT(DISTINCT c.comments_id) AS comments_quantity, p.posts_img, p.posts_date, u.users_id, u.users_img, u.users_name, u.users_last_name
+                FROM posts p
+                LEFT JOIN users u
+                ON p.posts_user = u.users_id
+                LEFT JOIN comments c
+                ON p.posts_id = c.comments_post_id 
+                LEFT JOIN likes l
+                ON p.posts_id = l.likes_post_id
+                WHERE u.users_id = ? 
+                GROUP BY  p.posts_id, u.users_id, p.posts_description, p.posts_img, p.posts_date, u.users_id, u.users_img, u.users_name, u.users_last_name
+                ORDER BY p.posts_id DESC
+            `,
+            [idLogged, idLogged]
+        )
 
         const [postsQuantity] = await connetion.query(
 
@@ -219,7 +232,7 @@ export class Model{
         )
         
         
-        return {userProfile, postsQuantity, userFollowers, followersQuantity, userFollowed, followedsQuantity, isFollowed}
+        return {userProfile, posts, postsQuantity, userFollowers, followersQuantity, userFollowed, followedsQuantity, isFollowed}
     }
 
     static async getMessages(userTransmitter, receiverId){
@@ -254,16 +267,11 @@ export class Model{
                     WHERE (messages_transmitter = ? AND messages_receiver = ?) or (messages_transmitter = ? AND messages_receiver = ?)`, 
                     [userTransmitter, receiverId, userTransmitter, receiverId, receiverId, userTransmitter])
         
-        
         return messages
     }
 
     static async getUserMessages (userLogged, chatUser){
-        
-        console.log(chatUser);
-        console.log(userLogged);
-        
-        
+    
         const [userMessages] = await connetion.query(
         `SELECT  SUM(CASE WHEN m.messages_view = 0 AND m.messages_receiver = ? THEN 1 ELSE 0 END)  AS messagesNotViewed,
             MAX(m.messages_date),
@@ -279,12 +287,9 @@ export class Model{
             ORDER BY MAX(m.messages_date) DESC, MAX(m.messages_view) DESC
             `, 
             [userLogged , userLogged, userLogged])
-            console.log(userMessages);
             
         return userMessages
     }
-
-
 
     static async insertMessage(userTransmitter, userReceiver, message){
         await connetion.query("INSERT INTO messages (messages_transmitter, messages_receiver, messages_content) VALUES (?, ?, ?)",
@@ -346,8 +351,7 @@ export class Model{
     }
 
      static async getComments(postId){
-        
-        
+         
         const [comments] = await connetion.query(`
            SELECT c.comments_id, c.comments_text, c.comments_date, u.users_img, u.users_name, u.users_last_name 
             FROM comments c
@@ -363,18 +367,14 @@ export class Model{
     }
 
     static async insertComment(comment){
-        
-               try{
+
         await connetion.query(`
             INSERT INTO comments (comments_post_id,  comments_text, comments_date, comments_user_id) 
             VALUES (?, ?, ?, ?)
             `, [...Object.values(comment)]
-        )}
-        catch(e){
-        console.error(e);
-        
-       }
+        )
     }   
+
     static async viewMessages(userLogged, userChat){
         
         await connetion.query(`
@@ -384,8 +384,7 @@ export class Model{
     }
 
     static async chatNotViews(userLogged){
-        
-        
+    
         const [chatsQuatity] = await connetion.query(`
             SELECT COUNT(DISTINCT messages_transmitter) AS chatsNotSeen
             FROM  messages

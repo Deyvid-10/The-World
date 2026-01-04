@@ -1,10 +1,10 @@
 
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 
 import Search from './Search';
 // import logo from '../assets/img/LOGO.png'
 
-import {Link} from 'react-router-dom'
+import {data, Link} from 'react-router-dom'
 
 import { useState } from 'react'
 import NotificationItem from './NotificationItem';
@@ -20,6 +20,7 @@ import { fetchLogout, queryClient } from '../util/requests';
 import { useMutation } from '@tanstack/react-query';
 import IsLoading from './IsLoading';
 import { ContentContext } from '../store/content-context';
+import { io } from 'socket.io-client';
 
 let urlBackend = 'http://localhost:3000'
 
@@ -27,17 +28,28 @@ export default function MainNavBar() {
 
  const {user} = useContext(SesionContext)
 
- const {getQuantityChatNotSeen} = useContext(ContentContext)
+ const {getQuantityChatNotSeen, handleChatCreated, handleChatSocket, isConnectedToSocket} = useContext(ContentContext)
 
   const {data: userData, isLoading: userIsLoanding, isError: isErrorUser} = user
-  const {notSeenQuantityData,  notSeenQuantityIsLoading,  notSeenQuantityIsError} = getQuantityChatNotSeen()
+  const {notSeenQuantityData,  notSeenQuantityIsLoading,  notSeenQuantityIsError, notSeenQuantityRefetch} = getQuantityChatNotSeen()
+
+  const audioRef = useRef(null);
+
+  function playAudio(){
+    audioRef.current.play();
+  };
 
   useEffect(()=>{
-    
+    if(isConnectedToSocket){
+      handleChatCreated()
+      if(userData){
+        handleChatSocket("0", notSeenQuantityRefetch, true, playAudio, userData[0].users_id)
+      }
+    }
     if(isErrorUser){      
       toast.error("User not found")
     }
-  }, [isErrorUser])
+  }, [isErrorUser, isConnectedToSocket, userData])
 
     const {mutate: logoutMutate, isPending, isError} = useMutation(
       {
@@ -54,9 +66,17 @@ export default function MainNavBar() {
   function logout(){
     logoutMutate()
   }
+
   
+
+
+
+    
   return (
     <div className="bg-white">
+
+    <audio ref={audioRef} src="/audio/notice.mp3" />
+
 
 
 
@@ -74,7 +94,7 @@ export default function MainNavBar() {
                   /> */}
                   <p className='font-bold text-2xl'>The <span className='text-emerald-500'>World</span></p>                </Link>
               </div>
-
+                
             
               {/* Search */}
 
@@ -151,11 +171,11 @@ export default function MainNavBar() {
         
                   {/* Notificacons */}
                   <Menu as="div"   className="relative ">
-                      <MenuButton className="relative p-2 hover:cursor-pointer">
+                      {/* <MenuButton className="relative p-2 hover:cursor-pointer">
                         <BellIcon aria-hidden="true"
                               className="size-7 shrink-0 text-gray-400 hover:text-gray-500 "/>
                         <span className='absolute top-0 left-1 size-5 text-sm bg-red-600 rounded-full text-white'>2</span>
-                      </MenuButton>
+                      </MenuButton> */}
                       <MenuItems
                         transition
                         className="absolute w-96 right-0 z-10 mt-2 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"

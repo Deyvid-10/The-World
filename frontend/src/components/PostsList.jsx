@@ -7,7 +7,6 @@ import { useState } from "react"
 export default function PostsList({style, postsData, postsIsLoading, emptyMessage}){
     
     
-    
     return <section className={style}>
         {postsIsLoading && <IsLoading></IsLoading>}
         {postsData && postsData.length === 0 && <p className="text-center font-semibold w-170">There is not posts in this profile</p>}
@@ -23,7 +22,8 @@ export default function PostsList({style, postsData, postsIsLoading, emptyMessag
                 postDate={data.posts_date}
                 postImg={data.posts_img}
                 postDescription={data.posts_description}
-                postLikes={data.posts_likes}
+                likesQuantity={data.likes_quantity}
+                liked={data.liked}
                 userId={data.users_id}
                 commentQuantity={data.comments_quantity}
                 />)}

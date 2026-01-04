@@ -49,13 +49,13 @@ function App() {
 
     
     <QueryClientProvider client={queryClient}>
-      <ContentContextProvider>
-        <SesionContextProvider>
-          <ToastContainer />
-          <RouterProvider router={router}>
-          </RouterProvider>
-        </SesionContextProvider>
-      </ContentContextProvider>
+      <SesionContextProvider>
+        <ContentContextProvider>
+            <ToastContainer />
+              <RouterProvider router={router}>
+            </RouterProvider>
+        </ContentContextProvider>
+      </SesionContextProvider>
     </QueryClientProvider>
 
     
