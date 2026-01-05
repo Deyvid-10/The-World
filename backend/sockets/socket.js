@@ -55,7 +55,7 @@ io.on("connection", (socket) => {
     }
     
     // Catching the socketid and the user connexted un that socket
-    // writeSesions(userTransmitter, socket.id)
+    writeSesions(userTransmitter, socket.id)
     console.log("User conected:", socket.id); ////
 
       // Creating the chat room and notice the client for join

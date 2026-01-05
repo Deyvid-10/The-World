@@ -158,7 +158,7 @@ export async function insertPost(formData){
 }
 
 export async function fetchPosts({}){
-   let url = 'http://localhost:3000/posts';
+   let url = 'https://the-world-jpsy.onrender.com/posts';
 
   const response = await fetch(url, {
     method: "GET",
@@ -176,7 +176,7 @@ export async function fetchPosts({}){
 }
 
 export async function credentials({formData, type, method}) {  
-   let url = 'https://the-world-jpsy.onrender.com/' + type;
+   let url = 'http://localhost:3000/' + type;
    
   const response = await fetch(url, {
     method: method,
