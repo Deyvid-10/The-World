@@ -12,7 +12,7 @@ const server = http.createServer(app)
 
 // Configuring the cors for permisions
 const corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: "*",
     methods: ["GET", "POST", "DELETE", "PUT"],
     // allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
