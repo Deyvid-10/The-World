@@ -372,17 +372,17 @@ export class Controller{
 
     getUserInfo = async (req, res) => {
 
-        // const token = req.cookies.tokenSocialSesion;
+        const token = req.cookies.tokenSocialSesion;
         
-        // if(token === undefined){
-        //     return res.send(false)
-        // }
+        if(token === undefined){
+            return res.send(false)
+        }
 
-        // const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
+        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
         
         
         try{
-            const userData = await this.Model.getUserData(42)
+            const userData = await this.Model.getUserData(id)
             const {users_img, users_name, users_last_name, users_email, users_bio} = userData[0]
         
             return res.json([{users_img, users_name, users_last_name, users_email, users_bio}])
