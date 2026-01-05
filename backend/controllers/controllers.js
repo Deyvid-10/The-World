@@ -226,7 +226,9 @@ export class Controller{
         
         // For compare the password with the password saved
         const [credentials] = await this.Model.getLoginCredentials(req.body.email)
-        
+        if(!credentials){
+            return res.json({errors: true, errorsList: credentials})
+        }
           
         if(!credentials){
             return res.json(({errors: true, errorsList: ['This email does not exist']})) 
@@ -246,10 +248,10 @@ export class Controller{
         }       
 
         const token = jwt.sign({users_id: credentials.users_id}, process.env.JWT_SECRET, {expiresIn: '1h'})
-        
+         console.log(token);
         return res.cookie("tokenSocialSesion", token, {
             httpOnly: true, 
-            secure: process.env.NODE_ENV === "prod",   
+            secure: true,   
             maxAge: 1000 * 60 * 60,
             sameSite: "none"
         }).json({correct: "logged"})
@@ -276,7 +278,7 @@ export class Controller{
         }  
 
         const [emaillValidation] = await this.Model.getLoginCredentials(req.body.email)
-
+        
         if(emaillValidation){
             return res.json(({errors: true, errorsList: ['This email already exist']}))
         } 
@@ -298,17 +300,16 @@ export class Controller{
 
         delete data2['conf-password']
 
-        
-
         await this.Model.insertSignupCredentials(data2)  
         
         const [{users_id}] = await this.Model.getLoginCredentials(req.body.email)
         
         const token = jwt.sign({users_id}, process.env.JWT_SECRET, {expiresIn: '1h'})
+       
         
         return res.cookie("tokenSocialSesion", token, {
             httpOnly: true, 
-            secure: process.env.NODE_ENV === "prod",   
+            secure: true,   
             maxAge: 1000 * 60 * 60,
             sameSite: "none"
         }).json({correct: "signedup"})

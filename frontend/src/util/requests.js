@@ -2,12 +2,15 @@ import { QueryClient } from '@tanstack/react-query';
 
 export const queryClient = new QueryClient();
 
+const backEndUrl = "https://the-world-jpsy.onrender.com/"
+
 export async function fetchUsers(search){
   let parameter = '?search=' + search 
 
   if(search === "*****suggestions*****") {parameter = '?suggestion=true'} 
 
-  let url = 'http://localhost:3000/users' + parameter;
+  let url = `${backEndUrl}users` + parameter;
+  console.log(url);
   
   const response = await fetch(url, {
     method: "GET",
@@ -173,7 +176,8 @@ export async function fetchPosts({}){
 }
 
 export async function credentials({formData, type, method}) {  
-   let url = 'http://localhost:3000/' + type;
+   let url = backEndUrl + type;
+   console.log(url);
    
   const response = await fetch(url, {
     method: method,
@@ -191,6 +195,8 @@ export async function credentials({formData, type, method}) {
   }
 
   const res  = await response.json();
+  
+  console.log(res);
   
   return res;
 }
