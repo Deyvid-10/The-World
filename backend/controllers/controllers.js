@@ -9,7 +9,7 @@ export class Controller{
     constructor({ Model }){
         this.Model = Model
     }
-    
+
     insertPost = async (req, res)=>{
 
         const token = req.cookies.tokenSocialSesion;
@@ -372,17 +372,24 @@ export class Controller{
 
     getUserInfo = async (req, res) => {
 
-        const token = req.cookies.tokenSocialSesion;
-        if(token === undefined){
-            return res.send(false)
-        }
+        // const token = req.cookies.tokenSocialSesion;
+        
+        // if(token === undefined){
+        //     return res.send(false)
+        // }
 
-        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
+        // const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
         
-        const userData = await this.Model.getUserData(id)
-        const {users_img, users_name, users_last_name, users_email, users_bio} = userData[0]
         
-        return res.json([{users_img, users_name, users_last_name, users_email, users_bio}])
+        try{
+            const userData = await this.Model.getUserData(2)
+            const {users_img, users_name, users_last_name, users_email, users_bio} = userData[0]
+        
+            return res.json([{users_img, users_name, users_last_name, users_email, users_bio}])
+        }catch(e){
+            return res.json([{error: "Fatal error", varaible: process.env.DB_HOST}])
+        }
+        
     }
 
     getMessages = async (req, res) => {

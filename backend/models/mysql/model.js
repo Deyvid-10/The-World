@@ -2,8 +2,8 @@ import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 
 // environment variable source
-// const envFile = process.env.ENV_FILE || "./dev.env";
-// dotenv.config({ path: envFile });
+const envFile = process.env.ENV_FILE || "./dev.env";
+dotenv.config({ path: envFile });
 
 // Configure data base connection
 const CONFIGURATION = {
@@ -341,12 +341,15 @@ export class Model{
     }
 
     static async getUserData (id){
+        
+        
         const [user] = await connetion.query(
             `SELECT * 
             FROM users
-            WHERE users_id = ?`,
+            WHERE users_i = ?`,
             [id]
         )
+        
         return user
     }
 

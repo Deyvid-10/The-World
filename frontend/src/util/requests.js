@@ -13,6 +13,8 @@ export async function fetchUsers(search){
     method: "GET",
     credentials: "include",
   });
+
+  console.log(!response.ok);
   
 
   if (!response.ok) {
@@ -174,9 +176,7 @@ export async function fetchPosts({}){
 }
 
 export async function credentials({formData, type, method}) {  
-  console.log({formData, type, method});
-  
-   let url = 'https://the-world-jpsy.onrender.com/' + type;
+   let url = 'http://localhost:3000/' + type;
    
   const response = await fetch(url, {
     method: method,
@@ -218,7 +218,7 @@ export async function fetchLogout() {
 }
 
 export async function fetchUser() {
-  let url = 'https://the-world-jpsy.onrender.com/user';
+  let url = 'http://localhost:3000/user';
 
   const response = await fetch(url, {
     method: "GET",
@@ -238,6 +238,7 @@ export async function fetchUser() {
 export async function getComments(postId) {
   
    let url = `http://localhost:3000/comments/${postId}`;
+   console.log(postId);
   const response = await fetch(url, {
       method: 'GET',
       credentials: "include",
