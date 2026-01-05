@@ -155,7 +155,7 @@ export class Model{
                 GROUP BY  p.posts_id, u.users_id, p.posts_description, p.posts_img, p.posts_date, u.users_id, u.users_img, u.users_name, u.users_last_name
                 ORDER BY p.posts_id DESC
             `,
-            [idLogged, idLogged]
+            [idLogged, idProfile]
         )
 
         const [postsQuantity] = await connetion.query(

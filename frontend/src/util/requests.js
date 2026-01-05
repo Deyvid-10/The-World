@@ -3,6 +3,7 @@ import { QueryClient } from '@tanstack/react-query';
 export const queryClient = new QueryClient();
 
 const backEndUrl = "https://the-world-jpsy.onrender.com/"
+// const backEndUrl = "https://localhost:3000"
 
 export async function fetchUsers(search){
   let parameter = '?search=' + search 

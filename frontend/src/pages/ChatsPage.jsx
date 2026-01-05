@@ -122,7 +122,7 @@ export default function ChatsPage(){
 
 
     return(
-        <section className="flex gap-3 h-[82vh] md:h-[89vh] md:max-w-[1500px] mx-auto my-5 px-4 sm:px-6 lg:px-8">
+        <section className="flex flex-col md:flex-row gap-3 h-[82vh] md:h-[89vh] md:max-w-[1500px] mx-auto my-5 px-4 sm:px-6 lg:px-8">
             <section className="flex flex-col bg-white rounded-2xl border p-4 w-full md:w-xl border-gray-200">
                 <h2 className="font-semibold text-2xl mb-4">Chats</h2>
                 <form className="relative items-center w-full my-5 block">
@@ -163,8 +163,6 @@ export default function ChatsPage(){
                          </ul>
                 </div>
             </section>
-
-            
 
             <section className="flex flex-col justify-between w-full bg-white rounded-2xl border p-4 border-gray-200">
            

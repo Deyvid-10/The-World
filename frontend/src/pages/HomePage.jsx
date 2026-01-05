@@ -88,7 +88,7 @@ export default function HomePage(){
     return(
         <GeneralStructure>
             {/* post section */}
-            {userData && <div  className="flex flex-col gap-3 max-w-[800px]">
+            {userData && <div  className="flex flex-col gap-3 w-[800px]">
                 <div className="w-full bg-white rounded-2xl border p-4 border-gray-200">
                     <div className="flex items-center gap-2 ">
                         <figure className="size-14"><img src={url + userData[0].users_img}  alt={"Profile image for " + userData[0].Marmolejo} className="rounded-full object-cover size-full"/></figure>
