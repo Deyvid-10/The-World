@@ -2,12 +2,14 @@ import { QueryClient } from '@tanstack/react-query';
 
 export const queryClient = new QueryClient();
 
+const backendUrl = "https://the-world-jpsy.onrender.com/"
+
 export async function fetchUsers(search){
   let parameter = '?search=' + search 
 
   if(search === "*****suggestions*****") {parameter = '?suggestion=true'} 
 
-  let url = 'http://localhost:3000/users' + parameter;
+  let url = `${backendUrl}users` + parameter;
   
   const response = await fetch(url, {
     method: "GET",
@@ -29,7 +31,7 @@ export async function fetchUsers(search){
 
 export async function fetchUserProfile(userProfileId){
   
-  let url = 'http://localhost:3000/user/profile/' + userProfileId;
+  let url = `${backendUrl}user/profile/` + userProfileId;
   
   const response = await fetch(url, {
     method: "GET",
@@ -158,7 +160,7 @@ export async function insertPost(formData){
 }
 
 export async function fetchPosts({}){
-   let url = 'https://the-world-jpsy.onrender.com/posts';
+   let url = `${backendUrl}${posts}`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -199,7 +201,7 @@ export async function credentials({formData, type, method}) {
 }
   
 export async function fetchLogout() {
-  let url = 'http://localhost:3000/logout';
+  let url = `${backendUrl}logout`;
 
   const response = await fetch(url, {
       method: 'POST',
@@ -218,7 +220,7 @@ export async function fetchLogout() {
 }
 
 export async function fetchUser() {
-  let url = 'http://localhost:3000/user';
+  let url = `${backendUrl}user`;
 
   const response = await fetch(url, {
     method: "GET",

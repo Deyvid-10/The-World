@@ -7,7 +7,7 @@ function MainNavigation() {
   return (
     <>
       <MainNavBar/>
-        {/* <Outlet/> */}
+        <Outlet/>
     </>
   );
 }
