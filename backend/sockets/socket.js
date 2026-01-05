@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken"
 import fs from "fs/promises"
 import dotenv from "dotenv";
 import { Model } from "../models/mysql/model.js"; 
+import { error } from "console";
 
 // environment variable source
 const envFile = process.env.ENV_FILE || "./dev.env";
@@ -45,12 +46,12 @@ export default function webSocket(server, corsOptions){
 io.on("connection", (socket) => {
     // catching token of the sesion for get de user id
     const cookieToken  = socket.handshake.headers.cookie; 
+    
     let userTransmitter = 0
-    if(cookieToken){
+    
+    if(cookieToken){ 
         const {users_id: id} = jwt.verify(cookieToken.substring(18), process.env.JWT_SECRET)
-        userTransmitter = id
-        console.log(id);
-        
+        userTransmitter = id 
     }
     
     // Catching the socketid and the user connexted un that socket

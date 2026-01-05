@@ -14,6 +14,9 @@ export async function fetchUsers(search){
     credentials: "include",
   });
 
+  console.log(!response.ok);
+  
+
   if (!response.ok) {
     const error = new Error('An error occurred while fetching the events');
     throw error;

@@ -9,7 +9,7 @@ export class Controller{
     constructor({ Model }){
         this.Model = Model
     }
-
+    
     insertPost = async (req, res)=>{
 
         const token = req.cookies.tokenSocialSesion;
@@ -18,7 +18,7 @@ export class Controller{
             return res.send(false)
         }
 
-        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
         
         let postData = []
 
@@ -47,7 +47,7 @@ export class Controller{
             return res.send(false)
         }
 
-        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
         
         let users = []
         
@@ -71,7 +71,7 @@ export class Controller{
             return res.send(false)
         }
 
-        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
 
         if(paramId !== 'you'){
             userId = paramId
@@ -114,7 +114,7 @@ export class Controller{
             return res.send(false)
         }
 
-        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
 
         const item = req.body
                         
@@ -131,7 +131,7 @@ export class Controller{
             return res.send(false)
         }
 
-        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
 
         const item = req.body
         
@@ -149,7 +149,7 @@ export class Controller{
             return res.send(false)
         }
 
-        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
 
         const postId = req.body.postId
         console.log(postId);
@@ -167,7 +167,7 @@ export class Controller{
             return res.send(false)
         }
 
-        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
 
         const postId = req.body.postId
         console.log(postId);          
@@ -185,7 +185,7 @@ export class Controller{
         }
         
         
-        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
 
         const user = req.body.user
                         
@@ -201,7 +201,7 @@ export class Controller{
             return res.send(false)
         }
 
-        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
         
         const posts = await this.Model.getPosts(id)
 
@@ -245,11 +245,11 @@ export class Controller{
             return res.json(({errors: true, errorsList: ['Password incorrect']}))
         }       
 
-        const token = jwt.sign({users_id: credentials.users_id}, "SECRET_PASSWORD", {expiresIn: '4h'})
+        const token = jwt.sign({users_id: credentials.users_id}, process.env.JWT_SECRET, {expiresIn: '1h'})
         
         return res.cookie("tokenSocialSesion", token, {
             httpOnly: true, 
-            secure: process.env.NODE_ENV === "production",   
+            secure: process.env.NODE_ENV === "prod",   
             maxAge: 1000 * 60 * 60
         }).json({correct: "logged"})
     }
@@ -303,11 +303,11 @@ export class Controller{
         
         const [{users_id}] = await this.Model.getLoginCredentials(req.body.email)
         
-        const token = jwt.sign({users_id}, "SECRET_PASSWORD", {expiresIn: '4h'})
+        const token = jwt.sign({users_id}, process.env.JWT_SECRET, {expiresIn: '1h'})
         
         return res.cookie("tokenSocialSesion", token, {
             httpOnly: true, 
-            secure: process.env.NODE_ENV === "production",   
+            secure: process.env.NODE_ENV === "prod",   
             maxAge: 1000 * 60 * 60
         }).json({correct: "signedup"})
     }
@@ -326,7 +326,7 @@ export class Controller{
             return res.send({error: "You are not logged"})
         }
 
-        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
 
         const data = req.body
         
@@ -377,12 +377,12 @@ export class Controller{
             return res.send(false)
         }
 
-        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
         
         const userData = await this.Model.getUserData(id)
-        const {users_id, users_img, users_name, users_last_name, users_email, users_bio} = userData[0]
+        const {users_img, users_name, users_last_name, users_email, users_bio} = userData[0]
         
-        return res.json([{users_id, users_img, users_name, users_last_name, users_email, users_bio}])
+        return res.json([{users_img, users_name, users_last_name, users_email, users_bio}])
     }
 
     getMessages = async (req, res) => {
@@ -393,7 +393,7 @@ export class Controller{
                 return res.send({error: "You are not logged"})
             }
         
-            const {users_id: userTransmitter} = jwt.verify(token, "SECRET_PASSWORD")
+            const {users_id: userTransmitter} = jwt.verify(token, process.env.JWT_SECRET)
         
             const messages = await this.Model.getMessages(userTransmitter, receiverId)  
             
@@ -417,7 +417,7 @@ export class Controller{
             return res.send({error: "You are not logged"})
         }
     
-        const {users_id: userTransmitter} = jwt.verify(token, "SECRET_PASSWORD")
+        const {users_id: userTransmitter} = jwt.verify(token, process.env.JWT_SECRET)
         const userMessages = await this.Model.getUserMessages(userTransmitter, receiverId)
         res.json(userMessages);
       } catch (err) {
@@ -449,7 +449,7 @@ export class Controller{
             return res.send(false);
         }
 
-        const { users_id: id } = jwt.verify(token, "SECRET_PASSWORD");
+        const { users_id: id } = jwt.verify(token, process.env.JWT_SECRET);
 
         comment.date = new Date()
         comment.user = id
@@ -476,7 +476,7 @@ export class Controller{
         }
         
         
-        const {users_id: id} = jwt.verify(token, "SECRET_PASSWORD")
+        const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
 
         const chatsQuatity = await this.Model.chatNotViews(id)
         

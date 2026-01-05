@@ -4,8 +4,8 @@ import React, { useContext, useEffect, useRef } from 'react';
 import Search from './Search';
 // import logo from '../assets/img/LOGO.png'
 
-import {data, Link} from 'react-router-dom'
-
+import {Link} from 'react-router-dom'
+import { toast } from "react-toastify";
 import { useState } from 'react'
 import NotificationItem from './NotificationItem';
 import {
@@ -20,7 +20,7 @@ import { fetchLogout, queryClient } from '../util/requests';
 import { useMutation } from '@tanstack/react-query';
 import IsLoading from './IsLoading';
 import { ContentContext } from '../store/content-context';
-import { io } from 'socket.io-client';
+
 
 let urlBackend = 'http://localhost:3000'
 
@@ -32,7 +32,7 @@ export default function MainNavBar() {
 
   const {data: userData, isLoading: userIsLoanding, isError: isErrorUser} = user
   const {notSeenQuantityData,  notSeenQuantityIsLoading,  notSeenQuantityIsError, notSeenQuantityRefetch} = getQuantityChatNotSeen()
-
+  
   const audioRef = useRef(null);
 
   function playAudio(){
@@ -47,7 +47,7 @@ export default function MainNavBar() {
       }
     }
     if(isErrorUser){      
-      toast.error("User not found")
+      toast.error("Your are not logged")
     }
   }, [isErrorUser, isConnectedToSocket, userData])
 

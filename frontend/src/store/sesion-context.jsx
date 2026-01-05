@@ -11,7 +11,7 @@ export const SesionContext = createContext({
 
 export default function SesionContextProvider({children}){
 
-    const {data, isLoading, isError, isSuccess} = useQuery(
+    const {data, isLoading, isError, isSuccess, error} = useQuery(
         {
             queryKey: ['user'],
             queryFn: fetchUser,
@@ -19,7 +19,7 @@ export default function SesionContextProvider({children}){
     ) 
 
     const ctxVlue = {
-        user: {data, isLoading, isError, isSuccess},
+        user: {data, isLoading, isError, isSuccess, error},
     }
 
     return <SesionContext.Provider value={ctxVlue}>
