@@ -33,7 +33,9 @@ export const ContentContext = createContext({
     socket: null
 })
 
-const url = "http://localhost:3000/"
+// const backEndUrl = "http://localhost:3000/"
+
+const backEndUrl = "https://the-world-jpsy.onrender.com/"
 
 
 export default function ContentContextProvider({children}){
@@ -41,7 +43,6 @@ export default function ContentContextProvider({children}){
     const { user } = useContext(SesionContext)
 
     const { data, isLoading, isSuccess } = user
-    // console.log(data);
     
     const {data: postsData, isLoading: postsIsLoading, isError: postsIsError} = useQuery(
         {
@@ -172,13 +173,13 @@ export default function ContentContextProvider({children}){
         } 
     })
 
-    let urlBackend = 'http://localhost:3000'
+    
 
     const socket = useRef(null)
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(()=>{
-        socket.current = io(urlBackend, { 
+        socket.current = io(backEndUrl, { 
             withCredentials: true
         })
 
