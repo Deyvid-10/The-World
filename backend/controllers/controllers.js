@@ -226,10 +226,7 @@ export class Controller{
         
         // For compare the password with the password saved
         const [credentials] = await this.Model.getLoginCredentials(req.body.email)
-        if(!credentials){
-            return res.json({errors: true, errorsList: credentials})
-        }
-          
+      
         if(!credentials){
             return res.json(({errors: true, errorsList: ['This email does not exist']})) 
         }
@@ -376,6 +373,7 @@ export class Controller{
     getUserInfo = async (req, res) => {
 
         const token = req.cookies.tokenSocialSesion;
+        console.log(token);
         
         if(token === undefined){
             return res.send(false)

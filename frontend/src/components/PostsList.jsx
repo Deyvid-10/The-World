@@ -9,7 +9,7 @@ export default function PostsList({style, postsData, postsIsLoading, emptyMessag
     
     return <section className={style}>
         {postsIsLoading && <IsLoading></IsLoading>}
-        {postsData && postsData.length === 0 && <p className="text-center font-semibold w-170">There is not posts in this profile</p>}
+        {postsData && postsData.length === 0 && !postsIsLoading && <p className="text-center font-semibold w-170">There is not posts in this profile</p>}
         {postsData && postsData.length !== 0 && 
 
         <div>

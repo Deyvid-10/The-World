@@ -29,7 +29,7 @@ export async function fetchUsers(search){
 
 export async function fetchUserProfile(userProfileId){
   
-  let url = 'http://localhost:3000/user/profile/' + userProfileId;
+  let url = `${backEndUrl}user/profile/` + userProfileId;
   
   const response = await fetch(url, {
     method: "GET",
@@ -47,7 +47,7 @@ export async function fetchUserProfile(userProfileId){
 }
 
 export async function followUser(user) {  
-   let url = 'http://localhost:3000/user/follow';
+   let url = `${backEndUrl}user/follow`;
    
   const response = await fetch(url, {
     method: 'POST',
@@ -70,7 +70,7 @@ export async function followUser(user) {
 
 export async function unfollowUser(user) { 
      
-   let url = 'http://localhost:3000/user/unfollow';
+   let url = `${backEndUrl}user/unfollow`;
    
   const response = await fetch(url, {
     method: 'DELETE',
@@ -92,7 +92,7 @@ export async function unfollowUser(user) {
 }
 
 export async function like(postId) {  
-   let url = 'http://localhost:3000/posts/like';
+   let url = `${backEndUrl}posts/like`;
    
   const response = await fetch(url, {
     method: 'POST',
@@ -115,7 +115,7 @@ export async function like(postId) {
 
 export async function disLike(postId) { 
      
-   let url = 'http://localhost:3000/posts/disLike';
+   let url = `${backEndUrl}posts/disLike`;
    
   const response = await fetch(url, {
     method: 'DELETE',
@@ -138,7 +138,7 @@ export async function disLike(postId) {
 
 export async function insertPost(formData){
   
-  let url = "http://localhost:3000/upload"
+  let url = `${backEndUrl}upload`
   
   const response = await fetch(url, {
     method: "POST",
@@ -158,7 +158,7 @@ export async function insertPost(formData){
 }
 
 export async function fetchPosts({}){
-   let url = 'http://localhost:3000/posts';
+   let url = `${backEndUrl}posts`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -176,7 +176,7 @@ export async function fetchPosts({}){
 }
 
 export async function credentials({formData, type, method}) {  
-   let url = backEndUrl + type;
+   let url = `${backEndUrl}` + type;
    console.log(url);
    
   const response = await fetch(url, {
@@ -184,7 +184,6 @@ export async function credentials({formData, type, method}) {
     body: formData,
     // headers: {
     //   'Content-Type': 'application/json',
-      
     // },
     credentials: "include",
   });
@@ -195,14 +194,14 @@ export async function credentials({formData, type, method}) {
   }
 
   const res  = await response.json();
-  
+
   console.log(res);
   
   return res;
 }
   
 export async function fetchLogout() {
-  let url = 'http://localhost:3000/logout';
+  let url = `${backEndUrl}logout`;
 
   const response = await fetch(url, {
       method: 'POST',
@@ -221,7 +220,7 @@ export async function fetchLogout() {
 }
 
 export async function fetchUser() {
-  let url = 'http://localhost:3000/user';
+  let url = `${backEndUrl}user`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -240,7 +239,7 @@ export async function fetchUser() {
 
 export async function getComments(postId) {
   
-   let url = `http://localhost:3000/comments/${postId}`;
+   let url = `${backEndUrl}comments/${postId}`;
    console.log(postId);
   const response = await fetch(url, {
       method: 'GET',
@@ -258,7 +257,7 @@ export async function getComments(postId) {
 }
 
 export async function addComment(comment) {  
-   let url = 'http://localhost:3000/comment/insert';
+   let url = `${backEndUrl}comment/insert`;
    
   const response = await fetch(url, {
     method: 'POST',
@@ -280,7 +279,7 @@ export async function addComment(comment) {
 }
 
 export async function getMessages(receiverId) {  
-   let url = `http://localhost:3000/messages/${receiverId}`;
+   let url = `${backEndUrl}messages/${receiverId}`;
 
   const response = await fetch(url, {
     method: 'GET',
@@ -298,7 +297,7 @@ export async function getMessages(receiverId) {
 }
 
 export async function getUsersWithMessages(userId) { 
-   let url = `http://localhost:3000/userMessages/` + userId;
+   let url = `${backEndUrl}userMessages/` + userId;
 
   const response = await fetch(url, {
     method: 'GET',
@@ -316,7 +315,7 @@ export async function getUsersWithMessages(userId) {
 }
 
 export async function viewMessages(user) {  
-   let url = 'http://localhost:3000/viewMessages/';
+   let url = `${backEndUrl}viewMessages/`;
    
   const response = await fetch(url, {
     method: 'PUT',
@@ -338,7 +337,7 @@ export async function viewMessages(user) {
 }
 
 export async function quantityChatNotSeen() { 
-   let url = `http://localhost:3000/chatsQuatityNotView/`;
+   let url = `${backEndUrl}chatsQuatityNotView/`;
 
   const response = await fetch(url, {
     method: 'GET',

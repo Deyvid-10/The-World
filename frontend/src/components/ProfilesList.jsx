@@ -24,8 +24,8 @@ export default function ({usersData, usersIsLoading, ...props}){
     return(
         <ul {...props}>
             {usersIsLoading && <IsLoading/>}
-            {(!usersData || usersData.length === 0) && <p className="text-center col-start-2">Profile have not been found</p>}
-            {usersData &&  usersData.map((user, index)=>(
+            {(!usersData || usersData.length === 0) && !usersIsLoading && <p className="text-center col-start-2">Profile have not been found</p>}
+            {usersData && !usersIsLoading &&  usersData.map((user, index)=>(
                 <li key={index} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <figure className="rounded-full size-8">
