@@ -4,7 +4,7 @@ import { Link, useParams, useSearchParams } from "react-router-dom"
 import { queryClient } from "../util/requests"
 import IsLoading from "./IsLoading"
 
-let url = "http://localhost:3000"
+let url = "https://the-world-jpsy.onrender.com"
 
 export default function ({usersData, usersIsLoading, ...props}){
 

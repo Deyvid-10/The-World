@@ -10,7 +10,7 @@ import { useLayoutEffect } from "react"
 import { queryClient } from "../util/requests"
 import { toast } from "react-toastify"
 
-const url = "http://localhost:3000/"
+const url = "https://the-world-jpsy.onrender.com/"
 
 // const socket = io(url, { 
 //     withCredentials: true

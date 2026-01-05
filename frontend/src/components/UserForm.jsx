@@ -14,6 +14,8 @@ import { useContext } from 'react'
 import { useState } from 'react'
 import { useRef } from 'react'
 
+const backendUrl = "https://the-world-jpsy.onrender.com/"
+
 export default function UserForm({createAccount = false, editProfile = false}){
 
   const redirect = useNavigate()
@@ -89,10 +91,10 @@ export default function UserForm({createAccount = false, editProfile = false}){
     profileRef.current.click()
   }  
   
-  const [profilePhoto, setProfilePhoto] = useState(`http://localhost:3000/img/profiles/default_profile_photo.webp`)
+  const [profilePhoto, setProfilePhoto] = useState(`${backendUrl}img/profiles/default_profile_photo.webp`)
   useEffect(()=>{
     if(data){
-      // setProfilePhoto(`http://localhost:3000${data[0].users_img}`)
+      setProfilePhoto(`${backendUrl}${data[0].users_img}`)
       console.log(data);
       
     }

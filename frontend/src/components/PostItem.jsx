@@ -10,7 +10,7 @@ import { ContentContext } from "../store/content-context"
 import { Link } from "react-router-dom"
 import { useEffect } from "react"
 
-let backendUrl =  'http://localhost:3000/'
+let backendUrl =  'https://the-world-jpsy.onrender.com/'
 
 export default function PostItem({postId, userName, userLastName, userImg, userId,postImg, postDate, postDescription, likesQuantity, liked, commentQuantity}){
 

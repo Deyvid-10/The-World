@@ -10,7 +10,7 @@ import { ContentContext } from "../store/content-context"
 import PostsList from "../components/PostsList"
 import { toast } from "react-toastify"
 
-let url = 'http://localhost:3000/'
+let url = 'https://the-world-jpsy.onrender.com/'
 
 export default function HomePage(){
     const {posts, insertPost} = useContext(ContentContext)

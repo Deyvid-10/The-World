@@ -9,7 +9,7 @@ import { ContentContext } from "../store/content-context"
 import IsLoading from "./IsLoading"
 import ProfilesList from "./ProfilesList"
 
-let url = 'http://localhost:3000/'
+let url = 'https://the-world-jpsy.onrender.com/'
 
 export default function Profile({profileContent}){
     

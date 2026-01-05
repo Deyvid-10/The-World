@@ -3,7 +3,7 @@ import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid"
 
 import { useState } from 'react'
 
-let url = 'http://localhost:3000'
+let url = 'https://the-world-jpsy.onrender.com'
 
 export default function PrincipalComment({comment}){
 

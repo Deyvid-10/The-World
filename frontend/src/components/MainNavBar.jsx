@@ -22,7 +22,7 @@ import IsLoading from './IsLoading';
 import { ContentContext } from '../store/content-context';
 
 
-let urlBackend = 'http://localhost:3000'
+let urlBackend = 'https://the-world-jpsy.onrender.com'
 
 export default function MainNavBar() {
 
