@@ -382,12 +382,12 @@ export class Controller{
         
         
         try{
-            const userData = await this.Model.getUserData(2)
+            const userData = await this.Model.getUserData(42)
             const {users_img, users_name, users_last_name, users_email, users_bio} = userData[0]
         
             return res.json([{users_img, users_name, users_last_name, users_email, users_bio}])
         }catch(e){
-            return res.json([{error: "Fatal error", varaible: process.env.DB_HOST}])
+            return res.json([{error: "Fatalxxx error", varaible: process.env.DB_PASS}])
         }
         
     }

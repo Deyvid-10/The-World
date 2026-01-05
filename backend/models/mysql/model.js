@@ -346,9 +346,11 @@ export class Model{
         const [user] = await connetion.query(
             `SELECT * 
             FROM users
-            WHERE users_i = ?`,
+            WHERE users_id = ?`,
             [id]
         )
+
+        console.log(user);
         
         return user
     }
