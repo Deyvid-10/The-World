@@ -2,8 +2,7 @@ import { QueryClient } from '@tanstack/react-query';
 
 export const queryClient = new QueryClient();
 
-const backEndUrl = "https://the-world-jpsy.onrender.com/"
-// const backEndUrl = "https://localhost:3000"
+const backEndUrl = import.meta.env.VITE_API_URL
 
 export async function fetchUsers(search){
   let parameter = '?search=' + search 
@@ -159,6 +158,8 @@ export async function insertPost(formData){
 }
 
 export async function fetchPosts({}){
+  console.log(backEndUrl);
+  
    let url = `${backEndUrl}posts`;
 
   const response = await fetch(url, {

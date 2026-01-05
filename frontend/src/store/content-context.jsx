@@ -35,7 +35,7 @@ export const ContentContext = createContext({
 
 // const backEndUrl = "http://localhost:3000/"
 
-const backEndUrl = "https://the-world-jpsy.onrender.com/"
+const backEndUrl = import.meta.env.VITE_API_URL
 
 
 export default function ContentContextProvider({children}){
