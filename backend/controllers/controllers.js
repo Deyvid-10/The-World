@@ -249,7 +249,7 @@ export class Controller{
         
         return res.cookie("tokenSocialSesion", token, {
             httpOnly: true, 
-            secure: process.env.NODE_ENV === "prod",   
+            secure: true,   
             maxAge: 1000 * 60 * 60
         }).json({correct: "logged"})
     }
@@ -307,7 +307,8 @@ export class Controller{
         
         return res.cookie("tokenSocialSesion", token, {
             httpOnly: true, 
-            secure: process.env.NODE_ENV === "prod",   
+            secure: true,   
+            // secure: process.env.NODE_ENV === "prod",   
             maxAge: 1000 * 60 * 60
         }).json({correct: "signedup"})
     }
@@ -373,7 +374,7 @@ export class Controller{
     getUserInfo = async (req, res) => {
 
         const token = req.cookies.tokenSocialSesion;
-        return res.json([{token}])
+        return res.json({token})
         // if(token === undefined){
         //     return res.send(false)
         // }
