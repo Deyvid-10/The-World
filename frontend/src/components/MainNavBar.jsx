@@ -39,6 +39,9 @@ export default function MainNavBar() {
     audioRef.current.play();
   };
 
+  console.log(userData);
+  
+
   useEffect(()=>{
     if(isConnectedToSocket){
       handleChatCreated()
