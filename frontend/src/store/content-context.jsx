@@ -223,17 +223,17 @@ export default function ContentContextProvider({children}){
         socket.current.on("chatMessage", (msg)=>{
 
             if(notice && msg.userTransmitter != userLogged){
-                play()
-                console.log("/chats/" + msg.userTransmitter);
+                // play()
+                // console.log("/chats/" + msg.userTransmitter);
                 
-                toast.success(<div>
-                                <a href={"/chats/" + msg.userTransmitter}>
-                                    <p className="font-bold text-black truncate w-70">{msg.userName}</p>
-                                    <p className="truncate w-70">{msg.message}</p>
-                                </a>
-                            </div>, {position: "bottom-left",
-                            icon: false
-                })
+                // toast.success(<div>
+                //                 <a href={"/chats/" + msg.userTransmitter}>
+                //                     <p className="font-bold text-black truncate w-70">{msg.userName}</p>
+                //                         <p className="truncate w-70">{msg.message}</p>
+                //                 </a>
+                //             </div>, {position: "bottom-left",
+                //             icon: false
+                // })
             }
             const chatId = msg.roomId.split("*")
             console.log(msg);

@@ -34,7 +34,7 @@ export default function Profile({profileContent}){
     return(
         <GeneralStructure>
             {userProfileIsLoading && <IsLoading/>}
-            {userProfileData && <section className="max-w-[1000px] flex flex-col gap-4 bg-white rounded-2xl border py-4 border-gray-200">
+            {userProfileData && <section className="w-[800px] flex flex-col gap-4 bg-white rounded-2xl border py-4 border-gray-200">
                 <div className="flex gap-5 items-center justify-between mx-auto">
                     <figure className="overflow-hidden rounded-full size-40 bg-emerald-600">
                         <img 
