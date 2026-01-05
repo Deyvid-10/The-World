@@ -12,7 +12,7 @@ const server = http.createServer(app)
 app.set("trust proxy", 1);
 // Configuring the cors for permisions
 const corsOptions = {
-    origin: "*",
+    origin: true,
     methods: ["GET", "POST", "DELETE", "PUT"],
     // allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
