@@ -9,7 +9,7 @@ import webSocket from './sockets/socket.js';
 const app = express()
 // creating server for chat live
 const server = http.createServer(app)
-
+app.set("trust proxy", 1);
 // Configuring the cors for permisions
 const corsOptions = {
     origin: "*",
