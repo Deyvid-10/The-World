@@ -2,22 +2,17 @@ import { QueryClient } from '@tanstack/react-query';
 
 export const queryClient = new QueryClient();
 
-const backendUrl = "https://the-world-jpsy.onrender.com/"
-
 export async function fetchUsers(search){
   let parameter = '?search=' + search 
 
   if(search === "*****suggestions*****") {parameter = '?suggestion=true'} 
 
-  let url = `${backendUrl}users` + parameter;
+  let url = 'http://localhost:3000/users' + parameter;
   
   const response = await fetch(url, {
     method: "GET",
     credentials: "include",
   });
-
-  console.log(!response.ok);
-  
 
   if (!response.ok) {
     const error = new Error('An error occurred while fetching the events');
@@ -31,7 +26,7 @@ export async function fetchUsers(search){
 
 export async function fetchUserProfile(userProfileId){
   
-  let url = `${backendUrl}user/profile/` + userProfileId;
+  let url = 'http://localhost:3000/user/profile/' + userProfileId;
   
   const response = await fetch(url, {
     method: "GET",
@@ -160,7 +155,7 @@ export async function insertPost(formData){
 }
 
 export async function fetchPosts({}){
-   let url = `${backendUrl}${posts}`;
+   let url = 'http://localhost:3000/posts';
 
   const response = await fetch(url, {
     method: "GET",
@@ -201,7 +196,7 @@ export async function credentials({formData, type, method}) {
 }
   
 export async function fetchLogout() {
-  let url = `${backendUrl}logout`;
+  let url = 'http://localhost:3000/logout';
 
   const response = await fetch(url, {
       method: 'POST',
@@ -220,7 +215,7 @@ export async function fetchLogout() {
 }
 
 export async function fetchUser() {
-  let url = `${backendUrl}user`;
+  let url = 'http://localhost:3000/user';
 
   const response = await fetch(url, {
     method: "GET",
