@@ -156,9 +156,9 @@ export async function insertPost(formData){
   return res;
 
 }
-
+console.log(backEndUrl, "dasdadas");
 export async function fetchPosts({}){
-  console.log(backEndUrl);
+  
   
    let url = `${backEndUrl}posts`;
 

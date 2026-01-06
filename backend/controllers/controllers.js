@@ -435,7 +435,10 @@ export class Controller{
 
     logOut = (req, res) => {
         
-        return res.clearCookie("tokenSocialSesion").json({ message: "Logged Out" })
+        return res.clearCookie("tokenSocialSesion", 
+            {httpOnly: true, 
+            secure: true,   
+            sameSite: "none"}).json({ message: "Logged Out" })
         
     }
 
