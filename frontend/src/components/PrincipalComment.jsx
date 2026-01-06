@@ -3,7 +3,7 @@ import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid"
 
 import { useState } from 'react'
 
-let url = 'https://the-world-jpsy.onrender.com'
+let url = import.meta.env.VITE_API_URL
 
 export default function PrincipalComment({comment}){
 

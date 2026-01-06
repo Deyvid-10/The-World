@@ -10,7 +10,7 @@ import { ContentContext } from "../store/content-context"
 import { Link } from "react-router-dom"
 import { useEffect } from "react"
 
-let backendUrl =  'https://the-world-jpsy.onrender.com'
+let backendUrl =  import.meta.env.VITE_API_URL
 
 export default function PostItem({postId, userName, userLastName, userImg, userId,postImg, postDate, postDescription, likesQuantity, liked, commentQuantity}){
 

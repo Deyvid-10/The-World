@@ -9,7 +9,7 @@ import { ContentContext } from "../store/content-context"
 import IsLoading from "./IsLoading"
 import ProfilesList from "./ProfilesList"
 
-let url = 'https://the-world-jpsy.onrender.com/'
+let url = import.meta.env.VITE_API_URL
 
 export default function Profile({profileContent}){
     

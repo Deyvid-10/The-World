@@ -10,7 +10,7 @@ import { useLayoutEffect } from "react"
 import { queryClient } from "../util/requests"
 import { toast } from "react-toastify"
 
-const url = "https://the-world-jpsy.onrender.com/"
+const url = import.meta.env.VITE_API_URL
 
 // const socket = io(url, { 
 //     withCredentials: true

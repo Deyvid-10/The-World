@@ -14,7 +14,7 @@ import { useContext } from 'react'
 import { useState } from 'react'
 import { useRef } from 'react'
 
-const backendUrl = "https://the-world-jpsy.onrender.com/"
+const backendUrl = import.meta.env.VITE_API_URL
 
 export default function UserForm({createAccount = false, editProfile = false}){
 

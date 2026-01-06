@@ -22,7 +22,7 @@ import IsLoading from './IsLoading';
 import { ContentContext } from '../store/content-context';
 
 
-let urlBackend = 'https://the-world-jpsy.onrender.com'
+let urlBackend = import.meta.env.VITE_API_URL
 
 export default function MainNavBar() {
 

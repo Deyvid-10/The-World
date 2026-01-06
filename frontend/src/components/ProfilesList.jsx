@@ -4,7 +4,7 @@ import { Link, useParams, useSearchParams } from "react-router-dom"
 import { queryClient } from "../util/requests"
 import IsLoading from "./IsLoading"
 
-let url = "https://the-world-jpsy.onrender.com"
+let url = import.meta.env.VITE_API_URL
 
 export default function ({usersData, usersIsLoading, ...props}){
 

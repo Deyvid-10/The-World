@@ -10,7 +10,7 @@ import { ContentContext } from "../store/content-context"
 import PostsList from "../components/PostsList"
 import { toast } from "react-toastify"
 
-let url = 'https://the-world-jpsy.onrender.com/'
+let url = import.meta.env.VITE_API_URL
 
 export default function HomePage(){
     const {posts, insertPost} = useContext(ContentContext)
