@@ -349,8 +349,6 @@ export class Model{
             WHERE users_id = ?`,
             [id]
         )
-
-        console.log(user);
         
         return user
     }
