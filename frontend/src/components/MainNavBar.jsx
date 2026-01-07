@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useRef } from 'react';
 import Search from './Search';
 // import logo from '../assets/img/LOGO.png'
 
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import { toast } from "react-toastify";
 import { useState } from 'react'
 import NotificationItem from './NotificationItem';
@@ -25,6 +25,8 @@ import { ContentContext } from '../store/content-context';
 let urlBackend = import.meta.env.VITE_API_URL
 
 export default function MainNavBar() {
+
+  const redirect = useNavigate()
 
  const {user} = useContext(SesionContext)
 
@@ -48,6 +50,9 @@ export default function MainNavBar() {
       if(userData){
         handleChatSocket("0", notSeenQuantityRefetch, true, playAudio, userData[0].users_id)
       }
+      if(userData === false){
+        redirect("/log-in")
+      }
     }
     if(isErrorUser){      
       toast.error("Your are not logged")
@@ -60,7 +65,7 @@ export default function MainNavBar() {
         mutationKey: ['logout'],
         onSuccess: (data) => {
   
-          queryClient.invalidateQueries({queryKey: ['user']}) 
+          queryClient.invalidateQueries();
 
         }
       }

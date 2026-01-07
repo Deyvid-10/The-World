@@ -176,7 +176,7 @@ export default function ChatsPage(){
                     
                     
                     {chat.length !== 0 ?
-                        <div ref={scrollRef} className=" h-full p-3 flex flex-col overflow-auto">
+                        <div ref={scrollRef} className=" h-full p-3 flex flex-col overflow-y-auto">
                             <div className="mt-auto flex flex-col gap-2">
                             {chat.map((msg, index)=>
                                     (
