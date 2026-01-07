@@ -152,7 +152,6 @@ export class Controller{
         const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
 
         const postId = req.body.postId
-        console.log(postId);
                     
         await this.Model.like(postId, id)
 
@@ -170,7 +169,7 @@ export class Controller{
         const {users_id: id} = jwt.verify(token, process.env.JWT_SECRET)
 
         const postId = req.body.postId
-        console.log(postId);          
+
         await this.Model.disLike(postId, id)
 
         return res.send({message: "You dislike this post now"})
@@ -245,7 +244,7 @@ export class Controller{
         }       
 
         const token = jwt.sign({users_id: credentials.users_id}, process.env.JWT_SECRET, {expiresIn: '1h'})
-         console.log(token);
+         console.log(token, "Login");
         return res.cookie("tokenSocialSesion", token, {
             httpOnly: true, 
             secure: true,   
@@ -373,7 +372,7 @@ export class Controller{
     getUserInfo = async (req, res) => {
 
         const token = req.cookies.tokenSocialSesion;
-        console.log(token);
+        console.log(token, "Getdata");
         
         if(token === undefined){
             return res.send(false)
