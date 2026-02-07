@@ -13,7 +13,6 @@ export default function PrincipalComment({comment}){
     
     function showReplyForm(){
         setReplyForm(prev =>(!prev))
-        console.log(replyForm);
         
     }
 
