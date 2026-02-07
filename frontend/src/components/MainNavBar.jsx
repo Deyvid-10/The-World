@@ -40,8 +40,6 @@ export default function MainNavBar() {
   function playAudio(){
     audioRef.current.play();
   };
-
-  console.log(userData);
   
 
   useEffect(()=>{

@@ -3,10 +3,15 @@ import { ContentContext } from "../store/content-context"
 import { Link, useParams, useSearchParams } from "react-router-dom"
 import { queryClient } from "../util/requests"
 import IsLoading from "./IsLoading"
+import { SesionContext } from "../store/sesion-context"
+
 
 let url = import.meta.env.VITE_API_URL
 
 export default function ({usersData, usersIsLoading, ...props}){
+    // const {user} = useContext(SesionContext)
+
+    // const {data: userData, isLoading: userIsLoanding, isError: isErrorUser} = user
 
     // const {userId} = useParams()
     const { followUser, unfollowUser } = useContext(ContentContext)

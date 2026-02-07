@@ -10,7 +10,6 @@ export async function fetchUsers(search){
   if(search === "*****suggestions*****") {parameter = '?suggestion=true'} 
 
   let url = `${backEndUrl}users` + parameter;
-  console.log(url);
   
   const response = await fetch(url, {
     method: "GET",
@@ -156,7 +155,6 @@ export async function insertPost(formData){
   return res;
 
 }
-console.log(backEndUrl, "dasdadas");
 export async function fetchPosts({}){
   
   
@@ -179,7 +177,6 @@ export async function fetchPosts({}){
 
 export async function credentials({formData, type, method}) {  
    let url = `${backEndUrl}` + type;
-   console.log(url);
    
   const response = await fetch(url, {
     method: method,
@@ -196,8 +193,6 @@ export async function credentials({formData, type, method}) {
   }
 
   const res  = await response.json();
-
-  console.log(res);
   
   return res;
 }
@@ -242,7 +237,6 @@ export async function fetchUser() {
 export async function getComments(postId) {
   
    let url = `${backEndUrl}comments/${postId}`;
-   console.log(postId);
   const response = await fetch(url, {
       method: 'GET',
       credentials: "include",

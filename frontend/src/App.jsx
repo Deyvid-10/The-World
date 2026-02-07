@@ -20,6 +20,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import SesionContextProvider from './store/sesion-context'
 import ContentContextProvider from './store/content-context'
 import { ToastContainer } from 'react-toastify'
+import ProfilePage from "./pages/ProfilePage";
 
 const router = createBrowserRouter([{
    path: '/',
@@ -27,7 +28,7 @@ const router = createBrowserRouter([{
     errorElement: <ErrorsPage/>,
     children: [
       {index: true, element:<HomePage />},
-      {path:'profile/:userId/posts', element:<Profile profileContent={"post"}/>},
+      {path:'profile/:userId/posts', element: <ProfilePage type="post"/>},
       {path:'profile/:userId/followers', element:<Profile profileContent={"follower"}/>},
       {path:'profile/:userId/followed', element:<Profile profileContent={"followed"}/>},
       {path:'search-profiles', element:<ProfilesPage />},
