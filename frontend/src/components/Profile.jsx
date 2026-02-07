@@ -34,7 +34,13 @@ export default function Profile({profileContent, userId}){
     }
 
     useEffect(()=>{
+        
         userProfileRefetch()
+
+        return ()=>{
+            console.log("Limpiando Profile de userId:", userId);
+
+        }
     }, [userId])
     
     return(
